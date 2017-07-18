@@ -33,7 +33,7 @@ class Markup implements ArrayAccess
     public $attributeList = null;
     protected $classList = null;
 
-    protected $content = null;
+    public $content = null;
     protected $text = '';
 
     protected $autoclosed = false;
@@ -57,6 +57,7 @@ class Markup implements ArrayAccess
         $this->text = '';
         return $this;
     }
+
 
     /**
      * Builds markup from static context
@@ -181,6 +182,7 @@ class Markup implements ArrayAccess
      */
     public function offsetSet($attribute, $value)
     {
+        $value = preg_replace("/\"/", "'", $value);
         $this->attributeList[$attribute] = $value;
     }
 
@@ -400,5 +402,9 @@ class Markup implements ArrayAccess
 	    }
 
         return $return;
+    }
+
+    public function getChildren() {
+        return $this->content;
     }
 }
