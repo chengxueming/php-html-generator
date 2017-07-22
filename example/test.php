@@ -1,49 +1,89 @@
 <?php
 require("../autoload.php");
 function testDivCondation() {
-	$img = ["url"=>"www.baidu.com", "type"=>0, 
+	$img = [
+		"url"=>"a girl ride on a horse",
+		"type"=>1, 
 		"jump_url"=>[
-			"android"=>"www.goole.com",
-			"ios"=>"www.baidu.com",
+			"praise"=>"a url to post a praise",
+			"comment"=>"a url to post a comment",
 		],
-		"name"=>"Jim"
 	];
 	$div = new Div("");
-	$div->addElem("CDN地址", new Input("url"));
-	$div->addElem("类型", new Select("type", [0=>"图片", 1=>"跳转图片"]));
+	$div->addElem("内容", new Input("url"));
+	$div->addElem("类型", new Select("type", [0=>"只读", 1=>"可以评论"]));
 	$divjump = new Div("jump_url");
-	$divjump->addElem("安卓跳转", new Input("android"));
-	$divjump->addElem("IOS跳转", new Input("ios"));
-	$div->addElem("跳转链接", $divjump, ["类型" => 1]);
-	$div->addElem("名字", new Input("name"), ["类型" => [1]]);
+	$divjump->addElem("点赞", new Input("praise"));
+	$divjump->addElem("评论", new Input("commit"));
+	$div->addElem("功能", $divjump, ["类型" => 1]);
 	$div->value = $img;
 	outputhtml("test", $div->innerHtml);
 }
 
 function testListDivCondation() {
 	$imgList = [
-		["url"=>"www.baidu.com", "type"=>0, 
-			"jump_url"=>[
-				"android"=>"www.goole.com",
-				"ios"=>"www.baidu.com",
-			]
+		[
+		"url"=>"a girl ride on a horse",
+		"type"=>0, 
+		"jump_url"=>[
+			"praise"=>"a url to post a praise",
+			"comment"=>"a url to post a comment",
 		],
-		["url"=>"www.baidu.com", "type"=>1,
-			"jump_url"=>[
-				"android"=>"www.goole.com",
-				"ios"=>"www.baidu.com",
-			]
+		],
+		[
+		"url"=>"a boy ride on a horse",
+		"type"=>1, 
 		]
 	];
 	$div = new Div("");
-	$div->addElem("CDN地址", new Input("url"));
-	$div->addElem("类型", new Select("type", [0=>"图片", 1=>"跳转图片"]));
+	$div->addElem("内容", new Input("url"));
+	$div->addElem("类型", new Select("type", [0=>"只读", 1=>"可以评论"]));
 	$divjump = new Div("jump_url");
-	$divjump->addElem("安卓跳转", new Input("android"));
-	$divjump->addElem("IOS跳转", new Input("ios"));
-	$div->addElem("跳转链接", $divjump, ["类型" => 1]);
+	$divjump->addElem("点赞", new Input("praise"));
+	$divjump->addElem("评论", new Input("commit"));
+	$div->addElem("功能", $divjump, ["类型" => 1]);
 	$listElem = new ListElem("", $div, $imgList);
 	outputhtml("test", $listElem->innerHtml);
+}
+
+function testComponents() {
+
+	$t = new EditTable(["width"=>"70%", "align"=>"center" , "cellspacing"=>"0", "cellpadding"=>"6"]);
+	$t->setData([
+		"movie_name"=>"穆赫兰道",
+		"origin_price"=>500,
+		"sale_price"=>200,
+		"type"=>"4,5"
+		]);
+    $t->row("电影名称", new Input("movie_name"));
+    $t->row("票价", new Input("origin_price", "number", "$"));
+    $t->row("售价", new Input("sale_price", "number", "$"));
+    $t->row("类型", new CheckBox("type", [1=>"爱情", 2=>"恐怖", 3=>"童话", 4=>"推理", 5=>"悬疑"]));
+    $t->submit("save", "index", [], "保存");
+    outputhtml("test", $t->render());
+}
+
+function testListTable() {
+	$t = new Table();
+	$t->setData(
+		[
+			["movie_name"=>"穆赫兰道",
+			"origin_price"=>500,
+			"sale_price"=>200,
+			"type"=>"4,5"
+			],[
+			"movie_name"=>"银河护卫队",
+			"origin_price"=>300,
+			"sale_price"=>100,
+			"type"=>"4,5"
+			]
+		]
+	);
+	$t->column("movie_name", "商品ID");
+	$t->column("origin_price", "票价($)");
+	$t->column("sale_price", "原价($)");
+	$t->column(function($row){return button("class", "method", [], "编辑");}, "编辑");
+	outputhtml("test", $t->render());
 }
 
 function outputhtml($file, $code) {

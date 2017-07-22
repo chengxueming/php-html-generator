@@ -40,7 +40,7 @@ JS;
 }
 
 class Input extends BaseEdit {
-    public function __construct($name, $value = "", $type="text", $propmt = "") {
+    public function __construct($name, $type="text", $propmt = "", $value = "") {
         parent::__construct($name);
         $id = $this->id;
         $propmt = empty($propmt)?"":"($propmt)";

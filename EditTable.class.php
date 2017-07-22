@@ -84,12 +84,12 @@ class EditTable {
             }
         }
     }
-    
+
     /**
-    *@param $title type str 
-    *@param $value 
+    *@param $title type str
+    *@param $value
     */
-    public function row($title, $value, $readonly=false, $condation = []) {
+    public function row($title, $value, $readonly=false, $condation = [], $required = false) {
         $tRow = elem("tr", [] ,elem("td", [], $title));
         $this->tBody->addElement($tRow);
         //可以作为子元素的
@@ -147,8 +147,13 @@ JS;
         $btn = elem("button", ["id"=>"submitbutton"], $text);
         $tRow = elem("tr", [] ,elem("td", [], $btn));
         $this->tBody->addElement($tRow);
-
-        $successJs = "window.location='".ci_link($this->c, $listMethodName, [], "&")."';";
+        $jump = ci_link($this->c, $listMethodName, [], "&");
+        $successJs = <<<JS
+        alert(data.errmsg);
+        if(data.errno == 0) {
+            window.location = "$jump";
+        }
+JS;
         $args = array_merge($args, ["c"=>$this->c, "m"=>$saveMethod]);
         $click_js = ajax($params, $successJs, $args, "&");
         $this->bodyScript[] =<<<JS
