@@ -1,7 +1,16 @@
         <meta charset="utf-8" />
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
         <script type = "text/javascript" src="static/js/common.js"></script>
-        <style type="text/css" src="common.css"></style><div id="Div7449"><div><label id="Label2812" for="Input8482">CDN地址:</label><div id="Input8482" style="display:inline"><input type="text" value="www.baidu.com"/><span style="color:red"></span></div></div><div><label id="Label9544" for="Select2854">类型:</label><select id="Select2854" style="display:inline" onchange="                        var jqNode = $(this).parent('div').parent('div');
+        <style type="text/css" src="common.css"></style><div id="ListElem3307"><button onclick="        var cloneLastChild = $('#ListElem3307').children('div:last-child')[0].cloneNode(true);
+        delCloneNodeId(cloneLastChild);
+        $(cloneLastChild).find('input').each(function(index, ele) {
+            $(ele).val('');
+        });
+        $('#ListElem3307')[0].appendChild(cloneLastChild);;">添加</button><button onclick="        if($('#ListElem3307').children('div').length == 1) {
+            return ;
+        }
+        var lastChild = $('#ListElem3307').children('div:last-child')[0];
+        $('#ListElem3307')[0].removeChild(lastChild);;">删除</button><div><div id="Div7684"><div><label id="Label8374" for="Input3734">CDN地址:</label><div id="Input3734" style="display:inline"><input type="text" value="www.baidu.com"/><span style="color:red"></span></div></div><div><label id="Label7353" for="Select2659">类型:</label><select id="Select2659" style="display:inline" onchange="                        var jqNode = $(this).parent('div').parent('div');
                         var selectValue = (            function(jqNode){         var selectNode = jqNode[0];
         var index = selectNode.selectedIndex;
         return selectNode.options[index].value; })($(this));;                    var targetNode =                 $($(jqNode.children()[2]).children()[1]).parent('div');
@@ -9,7 +18,7 @@
                         targetNode.show();
                     } else {
                         targetNode.hide();
-                    }"><option value="0" selected="selected">图片</option><option value="1">跳转图片</option></select></div><div><label id="Label7319" for="Div5660">跳转链接:</label><div id="Div5660" style="display:inline"><div><label id="Label9691" for="Input1734">安卓跳转:</label><div id="Input1734" style="display:inline"><input type="text" value="www.goole.com"/><span style="color:red"></span></div></div><div><label id="Label5210" for="Input3817">IOS跳转:</label><div id="Input3817" style="display:inline"><input type="text" value="www.baidu.com"/><span style="color:red"></span></div></div><script></script></div></div><script type="text/javascript">                        var jqNode = $("#Div7449");
+                    }"><option value="0" selected="selected">图片</option><option value="1">跳转图片</option></select></div><div><label id="Label9154" for="Div6501">跳转链接:</label><div id="Div6501" style="display:inline"><div><label id="Label2429" for="Input4589">安卓跳转:</label><div id="Input4589" style="display:inline"><input type="text" value="www.goole.com"/><span style="color:red"></span></div></div><div><label id="Label2079" for="Input5388">IOS跳转:</label><div id="Input5388" style="display:inline"><input type="text" value="www.baidu.com"/><span style="color:red"></span></div></div><script></script></div></div><script type="text/javascript">                        var jqNode = $("#Div7684");
                         var selectValue = (            function(jqNode){         var selectNode = jqNode[0];
         var index = selectNode.selectedIndex;
         return selectNode.options[index].value; })(                $($(jqNode.children()[1]).children()[1]));;                    var targetNode =                 $($(jqNode.children()[2]).children()[1]).parent("div");
@@ -17,4 +26,20 @@
                         targetNode.show();
                     } else {
                         targetNode.hide();
-                    }</script></div>
+                    }</script><addElem><br/></addElem></div></div><div><div id="Div7685"><div><label id="Label8375" for="Input3734">CDN地址:</label><div id="Input3735" style="display:inline"><input type="text" value="www.baidu.com"/><span style="color:red"></span></div></div><div><label id="Label7354" for="Select2659">类型:</label><select id="Select2660" style="display:inline" onchange="                        var jqNode = $(this).parent('div').parent('div');
+                        var selectValue = (            function(jqNode){         var selectNode = jqNode[0];
+        var index = selectNode.selectedIndex;
+        return selectNode.options[index].value; })($(this));;                    var targetNode =                 $($(jqNode.children()[2]).children()[1]).parent('div');
+                    if(selectValue == 1) {
+                        targetNode.show();
+                    } else {
+                        targetNode.hide();
+                    }"><option value="0" selected="selected">图片</option><option value="1" selected="selected">跳转图片</option></select></div><div><label id="Label9155" for="Div6501">跳转链接:</label><div id="Div6502" style="display:inline"><div><label id="Label2430" for="Input4589">安卓跳转:</label><div id="Input4590" style="display:inline"><input type="text" value="www.goole.com"/><span style="color:red"></span></div></div><div><label id="Label2080" for="Input5388">IOS跳转:</label><div id="Input5389" style="display:inline"><input type="text" value="www.baidu.com"/><span style="color:red"></span></div></div><script></script></div></div><script type="text/javascript">                        var jqNode = $("#Div7685");
+                        var selectValue = (            function(jqNode){         var selectNode = jqNode[0];
+        var index = selectNode.selectedIndex;
+        return selectNode.options[index].value; })(                $($(jqNode.children()[1]).children()[1]));;                    var targetNode =                 $($(jqNode.children()[2]).children()[1]).parent("div");
+                    if(selectValue == 1) {
+                        targetNode.show();
+                    } else {
+                        targetNode.hide();
+                    }</script><addElem><br/></addElem></div></div></div>

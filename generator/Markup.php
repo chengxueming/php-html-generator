@@ -182,7 +182,11 @@ class Markup implements ArrayAccess
      */
     public function offsetSet($attribute, $value)
     {
-        $value = preg_replace("/\"/", "'", $value);
+        if(stripos($attribute, "on") !== 0) {
+            $value = htmlspecialchars($value);
+        }else{
+            $value = str_replace("\"", "'", $value);
+        }
         $this->attributeList[$attribute] = $value;
     }
 

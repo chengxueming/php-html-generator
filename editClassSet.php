@@ -145,11 +145,15 @@ class ListElem extends BaseEdit {
 
     public function __construct($name, $subElem, $valueList = []) {
         parent::__construct($name);
+        $subElem->innerHtml->addElem(elem("br"));
         $this->valueList = $valueList;
         $mainId = $this->id;
         $addJs =<<<JS
         var cloneLastChild = $("#$mainId").children("div:last-child")[0].cloneNode(true);
         delCloneNodeId(cloneLastChild);
+        $(cloneLastChild).find("input").each(function(index, ele) {
+            $(ele).val("");
+        });
         $("#$mainId")[0].appendChild(cloneLastChild);
 JS;
         $delJs =<<<JS
@@ -166,16 +170,11 @@ JS;
             $valueList = [""];
         }
         foreach($valueList as $v) {
-            //移除ID属性 维护自建ID
-            //$html = preg_replace("/id=\"\w+\"/", "", $v ->innerHtml);
+            //修改html 内容
             $subElem->value = $v;
-            $html = null;
-            if(is_object($subElem->innerHtml)) {
-                $html = $subElem->innerHtml->__toString();
-            }else {
-                $html = $subElem->innerHtml;
-            }
-            $childElemList[] = elem("div", [], $html);
+            //防止对象指向同一个问题
+            $childElemList[] = elem("div", [], $subElem->innerHtml->__toString());
+            incrPropertys(["id", "name", "onchange"], $subElem->innerHtml);
         }
         $this->innerHtml = elem("div", ["id"=>$mainId], $childElemList);
         $func = $subElem->valueScriptFunc;
@@ -190,9 +189,6 @@ JS;
     }
 }
 
-class JoinElem extends BaseEdit {
-
-}
 
 class Div extends BaseEdit {
     var $titleMap = [];

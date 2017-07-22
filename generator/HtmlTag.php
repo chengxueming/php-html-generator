@@ -13,6 +13,27 @@ class HtmlTag extends Markup
 {
     /** @var int The language convention used for XSS avoiding */
     public static $outputLanguage = ENT_HTML5;
+    private $innerHtml = null;
+
+    public function __get($property) {
+        if($property == "tag") {
+            return $this->$property;
+        }
+        if($property == "innerHtml") {
+            $innerHtml = "";
+            foreach($this->content as $v) {
+                $innerHtml .= $v->toString();
+            }
+            return $innerHtml;
+        }
+    }
+
+    public function __set($property, $value) {
+        if($property == "innerHtml") {
+            $this->content = [];
+            $this->text($value);
+        }
+    }
 
     protected $autocloseTagsList = array(
         'img', 'br', 'hr', 'input', 'area', 'link', 'meta', 'param'
