@@ -20,7 +20,8 @@ Php class to generate html code
     $div->addElem("功能", $divjump, ["类型" => 1]);
     $div->value = $img;
 ```
-
+>Run It
+![generate html](https://raw.githubusercontent.com/chengxueming/php-html-generator/master/example/static/img/DivCondation.png)
 ```php
     //and if you want to generate a list like this
     $imgList = [
@@ -40,7 +41,8 @@ Php class to generate html code
     //you want to edit and add element or delete one
     $listElem = new ListElem("", $div, $imgList);
 ```
-
+>Run It
+![generate html](https://raw.githubusercontent.com/chengxueming/php-html-generator/master/example/static/img/ListDiv.png)
 
 ```php
     //if you have a tickek to geneartor a edit table and have a function to submit then content to clound server
@@ -59,7 +61,8 @@ Php class to generate html code
     $t->submit("save", "index", [], "保存");
     $t->render();
 ```
-
+>Run It
+![generate html](https://raw.githubusercontent.com/chengxueming/php-html-generator/master/example/static/img/EditTable.png)
 ```php
     //if you have a tickek to geneartor a edit table and have a function to submit then content to clound server
     $ticket =  [
@@ -81,3 +84,6 @@ Php class to generate html code
     $t->column(function($row){return button("class", "method", [], "编辑");}, "编辑");
     $t->render();
 ```
+
+>Run It
+![generate html](https://raw.githubusercontent.com/chengxueming/php-html-generator/master/example/static/img/ListTable.png)
