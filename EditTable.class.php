@@ -124,10 +124,11 @@ class EditTable {
             foreach($condation as $rowName => $rowValue) {
                 $script = $this->valueScript[$this->titleMap[$rowName]][0];
                 $id = $this->idMap[$this->titleMap[$rowName]];
+                $jsArr = phpToJsStrArr($rowValue);
                 $targetId = $value->id;
                 $this->bodyScript[] =<<<JS
                 $id$targetId = function(){
-                    if($script == $rowValue) {
+                    if($jsArr.indexOf($script) !== -1) {
                         $("#$targetId").closest("tr").show();
                     } else {
                         $("#$targetId").closest("tr").hide();

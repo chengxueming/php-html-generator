@@ -5,7 +5,8 @@ function testDivCondation() {
 		"jump_url"=>[
 			"android"=>"www.goole.com",
 			"ios"=>"www.baidu.com",
-		]
+		],
+		"name"=>"Jim"
 	];
 	$div = new Div("");
 	$div->addElem("CDN地址", new Input("url"));
@@ -14,6 +15,7 @@ function testDivCondation() {
 	$divjump->addElem("安卓跳转", new Input("android"));
 	$divjump->addElem("IOS跳转", new Input("ios"));
 	$div->addElem("跳转链接", $divjump, ["类型" => 1]);
+	$div->addElem("名字", new Input("name"), ["类型" => [1]]);
 	$div->value = $img;
 	outputhtml("test", $div->innerHtml);
 }
@@ -70,6 +72,6 @@ function testInnerHtml() {
 	echo $scr;
 }
 
-testListDivCondation();
+testDivCondation();
 #testClone();
 #echo date("Ymd H:i:s", time());

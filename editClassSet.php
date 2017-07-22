@@ -238,7 +238,8 @@ JS;
                 $selectValueScriptFunc = $this->scriptList[$postName];
                 $selectNode = $this->valueElem[$this->postName][$postName]->innerHtml;
                 $selectIndex = array_search($postName, array_keys($this->scriptList));
-                $targetIndex = count($this->scriptList) - 1;                
+                $targetIndex = count($this->scriptList) - 1;
+                $phpToJsStrArr = "phpToJsStrArr";
                 $nodeIndexFunc = function($index, $jqNode = "jqNode"){
                 return <<<JS
                 $($($jqNode.children()[$index]).children()[1])
@@ -246,7 +247,7 @@ JS;
                 };
                 $script = <<<JS
                     var targetNode = {$nodeIndexFunc($targetIndex)}.parent("div");
-                    if(selectValue == $valueSelect) {
+                    if({$phpToJsStrArr($valueSelect)}.indexOf(selectValue) != -1) {
                         targetNode.show();
                     } else {
                         targetNode.hide();

@@ -52,6 +52,19 @@ function incrPropertys($propertys, $elem) {
     }
 }
 
+function phpToJsStrArr($value) {
+    if(!is_array($value)) {
+        $value = [$value];
+    }
+    $value = array_map(function($v) {
+        if(is_int($v) || is_float($v)) {
+            return "{$v}";
+        }
+    }, $value);
+    $data = join('","', $value);
+    return "[\"$data\"]";
+}
+
 if ( ! function_exists('safeSetArr')) {
     function safeSetArr(&$args, $set) {
         foreach($set as $key=>$v) {
