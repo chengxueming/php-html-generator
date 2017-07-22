@@ -1,5 +1,6 @@
 # php-html-generator
 Php class to generate html code
+## 1. a html for edit a php array 
 ```php
     //if you have a php array like this:
     $img = [
@@ -22,6 +23,9 @@ Php class to generate html code
 ```
 >Run It
 ![generate html](https://raw.githubusercontent.com/chengxueming/php-html-generator/master/example/static/img/DivCondation.png)
+
+
+## 2. a html for edit a php array list(which have many similar element)
 ```php
     //and if you want to generate a list like this
     $imgList = [
@@ -44,6 +48,8 @@ Php class to generate html code
 >Run It
 ![generate html](https://raw.githubusercontent.com/chengxueming/php-html-generator/master/example/static/img/ListDiv.png)
 
+
+## 3. a html for edit a php array and post the data to your server
 ```php
     //if you have a tickek to geneartor a edit table and have a function to submit then content to clound server
     $ticket = [
@@ -63,6 +69,10 @@ Php class to generate html code
 ```
 >Run It
 ![generate html](https://raw.githubusercontent.com/chengxueming/php-html-generator/master/example/static/img/EditTable.png)
+when you click submit it will post a array the same as $ticket format
+
+## 4. a html for show a php array list
+
 ```php
     //if you have a tickek to geneartor a edit table and have a function to submit then content to clound server
     $ticket =  [
