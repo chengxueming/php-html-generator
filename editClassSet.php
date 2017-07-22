@@ -67,7 +67,8 @@ class Label extends BaseEdit {
     public function __construct($name ,$title, $sub) {
         parent::__construct($name);
         $id = $this->id;
-        $this->innerHtml = elem("div", [], [elem("label", ["id"=>$id, "for"=>$sub->id], $title), $sub->innerHtml]);
+        $sub->innerHtml["style"] = "display:inline";
+        $this->innerHtml = elem("div", [], [elem("label", ["id"=>$id, "for"=>$sub->id], "$title:"), $sub->innerHtml]);
 
         $func = $sub->valueScriptFunc;
         $this->sub = $sub;
@@ -198,29 +199,28 @@ class Div extends BaseEdit {
     var $scriptList = [];
     var $postNameList = [];
     var $valueMap = [];
+    private $bodyScripts = [];
 
     public function __construct($name, $value = []) {
         parent::__construct($name);
         if(!empty($value)) {
             $this->value = $value;
         }
-        $this->innerHtml = elem("div", ["id"=>$this->id]);
+        $this->innerHtml = elem("div", ["id"=>$this->id], elem("script"));
     }
 
-    public function addElem($title, $elem, $dir = 0, $condation = []) {
-        if(count($this->innerHtml->content) > 0 && $dir > 0) {
-            $this->innerHtml->addElement(elem("br"));
-        }
+    public function addElem($title, $elem, $condation = []) {
         $this->valueElem[$this->postName][$elem->postName] = $elem;
         if(isset($this->valueMap[$this->postName][$elem->postName])) {
             $elem->value = $this->valueMap[$this->postName][$elem->postName];
         }
-        $this->scriptList[] = $elem->valueScriptFunc;
-        $this->postNameList[] = $elem->postName;
+        $this->scriptList[$elem->postName] = $elem->valueScriptFunc;
+        $this->postNameList[$elem->postName] = $elem->postName;
         $scripts = "[".join(",", $this->scriptList)."]";
         $postNames = "['".join("','", $this->postNameList)."']";
         $label = new Label($elem->postName, $title, $elem);
-        $this->innerHtml->addElement($label->innerHtml);
+        array_insert($this->innerHtml->content, $label->innerHtml, -1);
+        //$this->innerHtml->addElement($label->innerHtml);
         $this->valueScript =<<<JS
         var data = {};
         var scripts = $scripts;
@@ -232,6 +232,51 @@ class Div extends BaseEdit {
         });
         return data;
 JS;
+
+        $this->titleMap[$title] = $elem->postName;
+        if(!empty($condation)) {
+            foreach($condation as $titleSelect => $valueSelect) {
+                //修改select节点的onchange用于动态加载 1.获取自身的值 2.根据值判断是否toggle
+                $postName = $this->titleMap[$titleSelect];
+                $selectValueScriptFunc = $this->scriptList[$postName];
+                $selectValueScriptFunc = $this->scriptList[$postName];
+                $selectNode = $this->valueElem[$this->postName][$postName]->innerHtml;
+                $selectIndex = array_search($postName, array_keys($this->scriptList));
+                $targetIndex = count($this->scriptList) - 1;                
+                $nodeIndexFunc = function($index, $jqNode = "jqNode"){
+                return <<<JS
+                $($($jqNode.children()[$index]).children()[1])
+JS;
+                };
+                $script = <<<JS
+                    var targetNode = {$nodeIndexFunc($targetIndex)}.parent("div");
+                    if(selectValue == $valueSelect) {
+                        targetNode.show();
+                    } else {
+                        targetNode.hide();
+                    }
+JS;
+                $selectFunc = function($source, $selectNode, $jqNode) use($script, $selectValueScriptFunc) {
+                    $scripts = [];
+                    if(!empty($source)) {
+                        $scripts = explode(";", $source);
+                    }else{
+                        $scripts []=<<<JS
+                        var jqNode = $jqNode;
+                        var selectValue = ($selectValueScriptFunc)($selectNode);
+JS;
+                    }
+                    $scripts[] = "$script";
+                    return join(";", $scripts);
+                };
+                $selectNode["onchange"] = $selectFunc($selectNode["onchange"], '$(this)', '$(this).parent("div").parent("div")');
+                //初始化标签节点中的select 页面加载时的condation情况
+                $this->bodyScripts = $selectFunc($this->bodyScripts, $nodeIndexFunc($selectIndex), "$(\"#{$this->id}\")");
+                //修改内置script标签 1.获取select的值 2.根据值判断是否toggle
+                $this->innerHtml->content[count($this->innerHtml->content) - 1] = elem("script", ["type"=>"text/javascript"], $this->bodyScripts);
+            }
+        }
+
     }
 
     protected function setValue($value) {

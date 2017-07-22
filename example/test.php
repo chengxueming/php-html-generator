@@ -1,13 +1,20 @@
 <?php
 require("../autoload.php");
-function testDiv() {
-	$a["successJump"] = ["android"=> "www.baidu.com", "ios"=>"www.google.com"];
-	$a["successJump2"] = ["android"=> "www.baidu.com afsafsadgfsadf", "ios"=>"www.google.com"];
-	$div = new Div("successJump");
-	$div->addElem("安卓跳转", new Input("android", ""));
-	$div->addElem("IOS跳转", new Input("ios", ""));
-	$div->value = $a["successJump"];
-	$div->value = $a["successJump2"];
+function testDivCondation() {
+	$img = ["url"=>"www.baidu.com", "type"=>0, 
+		"jump_url"=>[
+			"android"=>"www.goole.com",
+			"ios"=>"www.baidu.com",
+		]
+	];
+	$div = new Div("");
+	$div->addElem("CDN地址", new Input("url"));
+	$div->addElem("类型", new Select("type", [0=>"图片", 1=>"跳转图片"]));
+	$divjump = new Div("jump_url");
+	$divjump->addElem("安卓跳转", new Input("android"));
+	$divjump->addElem("IOS跳转", new Input("ios"));
+	$div->addElem("跳转链接", $divjump, ["类型" => 1]);
+	$div->value = $img;
 	outputhtml("test", $div->innerHtml);
 }
 
@@ -22,4 +29,12 @@ EOF;
         file_put_contents("./$file.html", $head.$code);
 }
 
-testDiv();
+function testClone() {
+	$input = elem("input", ["id"=>"input12324", "name"=>"input1312"]);
+	incrIdAndName($input);
+	echo $input;
+}
+
+testDivCondation();
+#testClone();
+#echo date("Ymd H:i:s", time());

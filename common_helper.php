@@ -2,7 +2,6 @@
 function elem($name, $attrs = [], $childrens = []){
     $e = HtmlGenerator\HtmlTag::createElement($name);
     foreach($attrs as $key => $v) {
-        $v = preg_replace("/\"/", "'", $v);
         $e->set($key, $v);
     }
     $childrens = is_array($childrens)?$childrens:[$childrens];
@@ -15,6 +14,42 @@ function elem($name, $attrs = [], $childrens = []){
         }
     }
     return $e;
+}
+
+function incrPropertys($propertys, $elem) {
+    if(!is_array($propertys)) {
+        $propertys = [$propertys];
+    }
+    $new_attr_func = function($old_attr) {
+        $num_part =  preg_replace("/[a-zA-Z]+/","", $old_attr);
+        $str_part = preg_replace("/\d+/", "", $old_attr);
+        return $str_part.($num_part + 1);
+    };
+    $new_script_func = function($old_script) use ($new_attr_func) {
+        return preg_replace_callback(
+            ["/[\"|']#(.*)[\"|']/", "/getElementById\([\"|'](.*)[\"|']\)/"],
+            function ($matches) use ($new_attr_func) {
+                 return str_replace($matches[1], $new_attr_func($matches[1]), $matches[0]);
+            },
+            $old_script
+        );
+    };
+    if($elem->tag == "script") {
+        $elem->innerHtml = $new_script_func($elem->innerHtml);
+    }
+    foreach($propertys as $attrName) {
+        if(isset($elem[$attrName])) {
+            //所有html的事件属性中的引号都会用\'或' 而不是"
+            if(stripos($attrName, "on") === 0) {
+                 $elem[$attrName] = $new_script_func($elem[$attrName]);
+            }else{
+                $elem[$attrName] = $new_attr_func($elem[$attrName]);
+            }
+        }
+    }
+    foreach($elem->content as $v) {
+        incrPropertys($propertys, $v);
+    }
 }
 
 if ( ! function_exists('safeSetArr')) {
@@ -112,4 +147,23 @@ function button($c, $m, $args = [], $text) {
     ]], $a);
     return $e;
 }
+
+function array_insert(&$arr,$value,$position=0)
+{
+    if($position < 0) {
+        $position = count($arr) + $position;
+    }
+    $position = $position<0?0:$position;
+    $position = $position > count($arr)?count($arr):$position;
+    $myarray = $arr;
+    $fore=($position==0)?array():array_splice($myarray,0,$position);
+    $fore[]=$value;
+    $arr=array_merge($fore,$myarray);
+}
+##############################test#######################
+#$arr = ["1231"];
+#end($arr) = "1231241";
+#print_r($arr);
+// array_insert($arr, "####", -1);
+// print_r($arr);
 ?>
