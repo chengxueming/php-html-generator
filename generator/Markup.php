@@ -183,7 +183,7 @@ class Markup implements ArrayAccess
     public function offsetSet($attribute, $value)
     {
         if(is_string($value)) {
-            if(stripos($attribute, "on") !== 0) {
+            if(stripos($attribute, "on") !== 0 && $attribute != "href") {
                 $value = htmlspecialchars($value);
             }else{
                 $value = str_replace("\"", "'", $value);

@@ -1,6 +1,9 @@
 (function(global) {
 	// body...
-	window.delCloneNodeId = function(cloneNode) {
+	global.in_array = function(arr, value) {
+	            return arr.indexOf(value) !== -1;
+	        };
+	global.delCloneNodeId = function(cloneNode) {
 		if(typeof cloneNode == "undefined") {
 		    return ;
 		}
@@ -19,7 +22,7 @@
 		    delCloneNodeId(ele);
 		});
 	};
-	window.uploadImg = function(inputFile, inputText, c, m) {
+	global.uploadImg = function(inputFile, inputText, c, m) {
 	    if (isImage(inputFile.val())) {
 	        $.ajaxFileUpload({
 	            url: 'index.php?c='+c+'&m='+m+'&file_id=' + inputFile.attr("id"), //用于文件上传的服务器端请求地址
@@ -41,7 +44,7 @@
 	        $.messager.alert('信息提示', '文件类型不合法！');
 	    }
 	};
-	window.jqFirstChild = function(ele) {
+	global.jqFirstChild = function(ele) {
 		return $($(ele).children()[0]);
 	}
 })(window)

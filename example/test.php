@@ -23,8 +23,12 @@ function testDivCondation() {
 function testListDivCondation() {
 	$imgList = [
 		[
-		"url"=>"a girl ride on a horse",
+		"url"=>"a boy ride on a horse",
 		"type"=>0, 
+		],
+		[
+		"url"=>"a girl ride on a horse",
+		"type"=>1, 
 		"jump_url"=>[
 			"praise"=>"a url to post a praise",
 			"comment"=>"a url to post a comment",
@@ -32,15 +36,15 @@ function testListDivCondation() {
 		],
 		[
 		"url"=>"a boy ride on a horse",
-		"type"=>1, 
-		]
+		"type"=>0, 
+		],
 	];
 	$div = new Div("");
 	$div->addElem("内容", new Input("url"));
 	$div->addElem("类型", new Select("type", [0=>"只读", 1=>"可以评论"]));
 	$divjump = new Div("jump_url");
 	$divjump->addElem("点赞", new Input("praise"));
-	$divjump->addElem("评论", new Input("commit"));
+	$divjump->addElem("评论", new Input("comment"));
 	$div->addElem("功能", $divjump, ["类型" => 1]);
 	$listElem = new ListElem("", $div, $imgList);
 	outputhtml("test", $listElem->innerHtml);
@@ -112,6 +116,6 @@ function testInnerHtml() {
 	echo $scr;
 }
 
-testDivCondation();
+testListTable();
 #testClone();
 #echo date("Ymd H:i:s", time());

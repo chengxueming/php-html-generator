@@ -102,6 +102,9 @@ JS;
     public  function setValue($value) {
         $values = explode(",", $value);
         foreach($this->valueElem as $v) {
+            if(isset($v["checked"])) {
+                unset($v["checked"]);
+            }
             if(in_array($v["value"], $values)) {
                 $v["checked"] = "checked";
             }
@@ -132,6 +135,9 @@ JS;
     public function setValue($value) {
         $values = explode(",", $value);
         foreach($this->valueElem as $v) {
+            if(isset($v["selected"])) {
+                unset($v["selected"]);
+            }
             if(in_array($v["value"], $values)) {
                 $v["selected"] = "selected";
             }
@@ -217,11 +223,12 @@ class Div extends BaseEdit {
         $label = new Label($elem->postName, $title, $elem);
         array_insert($this->innerHtml->content, $label->innerHtml, -1);
         //$this->innerHtml->addElement($label->innerHtml);
+        $noScriptTags = phpToJsStrArr(["LABEL", "BR", "SCRIPT"]);
         $this->valueScript =<<<JS
         var data = {};
         var scripts = $scripts;
         var postNames = $postNames;
-        jqNode.children().children().filter(function(index, ele){if(ele.tagName=="LABEL")return false;return true;}).each(function(index, ele) {
+        jqNode.children().children().filter(function(index, ele){return !in_array($noScriptTags, ele.tagName);}).each(function(index, ele) {
             console.log(jqFirstChild(ele));
             var value = (scripts[index])($(ele));
             data[postNames[index]] = value;

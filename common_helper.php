@@ -60,6 +60,7 @@ function phpToJsStrArr($value) {
         if(is_int($v) || is_float($v)) {
             return "{$v}";
         }
+        return $v;
     }, $value);
     $data = join('","', $value);
     return "[\"$data\"]";
