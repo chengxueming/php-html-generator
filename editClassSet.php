@@ -221,6 +221,7 @@ class Div extends BaseEdit {
         $scripts = "[".join(",", $this->scriptList)."]";
         $postNames = "['".join("','", $this->postNameList)."']";
         $label = new Label($elem->postName, $title, $elem);
+        $label->innerHtml["style"] = "margin-left:2em;";
         array_insert($this->innerHtml->content, $label->innerHtml, -1);
         //$this->innerHtml->addElement($label->innerHtml);
         $noScriptTags = phpToJsStrArr(["LABEL", "BR", "SCRIPT"]);

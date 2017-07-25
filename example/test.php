@@ -7,6 +7,22 @@ function testDivCondation() {
 		"jump_url"=>[
 			"praise"=>"a url to post a praise",
 			"comment"=>"a url to post a comment",
+			"name" => [
+				"frst"=>"jhon",
+				"last"=>"ham",
+				"type"=>1,
+				"addion"=>[
+					"before"=>12,
+					"after"=>13,
+				]
+			],
+			"more"=>[
+				"ansewer1",
+				"ansewer2",
+				"ansewer3",
+				"ansewer4",
+				"ansewer5",
+			]
 		],
 	];
 	$div = new Div("");
@@ -14,8 +30,18 @@ function testDivCondation() {
 	$div->addElem("类型", new Select("type", [0=>"只读", 1=>"可以评论"]));
 	$divjump = new Div("jump_url");
 	$divjump->addElem("点赞", new Input("praise"));
-	$divjump->addElem("评论", new Input("commit"));
+	$divjump->addElem("评论", new Input("comment"));
+		$divname = new Div("name");
+	$divname->addElem("FIRST_NAME", new Input("frst"));
+	$divname->addElem("LAST_NAME", new Input("last"));
 	$div->addElem("功能", $divjump, ["类型" => 1]);
+	$divjump->addElem("name-part", $divname);
+	$divaddion = new Div("addion");
+	$divaddion->addElem("BEFORE", new Input("before"));
+	$divaddion->addElem("AFTER", new Input("after"));
+	$divname->addElem("TYPE", new Select("type", [0=>"normal", 1=>"not"]));
+	$divname->addElem("ADDTION", $divaddion, ["TYPE"=>1]);
+	$divjump->addElem("MORE", new ListElem("more", new Input(""), $img["jump_url"]["more"]));
 	$div->value = $img;
 	outputhtml("test", $div->innerHtml);
 }
@@ -116,6 +142,15 @@ function testInnerHtml() {
 	echo $scr;
 }
 
-testListTable();
+function testListDivList() {
+	$div = new Div("div");
+	$init = ["www.baidu.com"];
+	$le = new ListElem("list", new Input("", "text"),  $init);
+	$div->addElem("section", $le);
+	$outlist = new ListElem("outlist", $div);
+	outputhtml("test", $outlist->innerHtml);
+}
+
+testDivCondation();
 #testClone();
 #echo date("Ymd H:i:s", time());
