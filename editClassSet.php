@@ -11,7 +11,7 @@ class BaseEdit {
     public function __construct($name) {
         $this->postName = $name;
         $class = get_class($this);
-        $this->id = $class.rand(1000, 9999);
+        $this->id = $class.rand(1000, 999999);
     }
 
     public function __set($property, $value) {
@@ -147,27 +147,44 @@ JS;
 
 
 class ListElem extends BaseEdit {
-    var $valueList = [];
+    var $subElem = null;
 
     public function __construct($name, $subElem, $valueList = []) {
         parent::__construct($name);
-        $subElem->innerHtml->addElem(elem("br"));
-        $this->valueList = $valueList;
+        $subElem->innerHtml->addElement(elem("br"));
+        $func = $subElem->valueScriptFunc;
+        $this->subElem = $subElem;
+        $this->innerHtml = elem("div", ["id"=>$this->id]);
+        $this->value = $valueList;
+        $this->valueScript =<<<JS
+            var data = [];
+            jqNode.children("div").each(function(index, ele) {
+                var value = ($func)(jqFirstChild(ele));
+                data.push(value);
+            });
+            return data;
+JS;
+    }
+
+    public function setValue($valueList) {
+        $subElem = $this->subElem;
         $mainId = $this->id;
         $addJs =<<<JS
-        var cloneLastChild = $("#$mainId").children("div:last-child")[0].cloneNode(true);
+        var outDiv = $(this).parent("div");
+        var cloneLastChild = outDiv.children("div:last-child")[0].cloneNode(true);
         delCloneNodeId(cloneLastChild);
         $(cloneLastChild).find("input").each(function(index, ele) {
             $(ele).val("");
         });
-        $("#$mainId")[0].appendChild(cloneLastChild);
+        outDiv[0].appendChild(cloneLastChild);
 JS;
         $delJs =<<<JS
-        if($("#$mainId").children("div").length == 1) {
+        var outDiv = $(this).parent("div");
+        if(outDiv.children("div").length == 1) {
             return ;
         }
-        var lastChild = $("#$mainId").children("div:last-child")[0];
-        $("#$mainId")[0].removeChild(lastChild);
+        var lastChild = outDiv.children("div:last-child")[0];
+        outDiv[0].removeChild(lastChild);
 JS;
         $addBtnAttr = ["onclick"=>"$addJs;"];
         $delBtnAttr = ["onclick"=>"$delJs;"];
@@ -179,19 +196,11 @@ JS;
             //修改html 内容
             $subElem->value = $v;
             //防止对象指向同一个问题
+            tagIndent($subElem->innerHtml, 2);
             $childElemList[] = elem("div", [], $subElem->innerHtml->__toString());
-            incrPropertys(["id", "name", "onchange"], $subElem->innerHtml);
+            incrPropertys(["id", "name", "onchange", "onclick"], $subElem->innerHtml);
         }
-        $this->innerHtml = elem("div", ["id"=>$mainId], $childElemList);
-        $func = $subElem->valueScriptFunc;
-        $this->valueScript =<<<JS
-            var data = [];
-            jqNode.children("div").each(function(index, ele) {
-                var value = ($func)(jqFirstChild(ele));
-                data.push(value);
-            });
-            return data;
-JS;
+        $this->innerHtml ->content = $childElemList;
     }
 }
 
@@ -221,7 +230,7 @@ class Div extends BaseEdit {
         $scripts = "[".join(",", $this->scriptList)."]";
         $postNames = "['".join("','", $this->postNameList)."']";
         $label = new Label($elem->postName, $title, $elem);
-        $label->innerHtml["style"] = "margin-left:2em;";
+        tagIndent($label->innerHtml, 2);
         array_insert($this->innerHtml->content, $label->innerHtml, -1);
         //$this->innerHtml->addElement($label->innerHtml);
         $noScriptTags = phpToJsStrArr(["LABEL", "BR", "SCRIPT"]);

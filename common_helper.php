@@ -137,8 +137,23 @@ EOF;
     return $_ajax;
 }
 
+function tagIndent($tag, $indent) {
+    $tag["style"] = "margin-left:{$indent}em;";
+}
+
 function a($c, $m, $args = [], $text) {
     return elem("a", ["href"=>ci_link($c, $m, $args)], $text);
+}
+
+function mIsArr($arr) {
+    $index = 0;
+    foreach($arr as $k=>$v) {
+        if($k != $index) {
+            return false;
+        }
+        $index++;
+    }
+    return true;
 }
 
 function ci_link($c, $m, $args = [], $break="&amp;") {

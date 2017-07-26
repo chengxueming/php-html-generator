@@ -7,17 +7,34 @@
 		if(typeof cloneNode == "undefined") {
 		    return ;
 		}
-		this.propertyAutoAdd = function(property) {
+		function getPropertyPart(value, preg) {
+			var part = value.replace(preg, "");
+			return part;
+		}
+		this.findMaxNumPart = function(tag, head, prop = "id") {
+			var max = 0;
+			$(document).find(tag+"["+prop+"^='"+head+"']").each(function(index, ele){
+				var value = $(ele).attr(prop);
+				var part = getPropertyPart(value, /[A-Z|a-z]+/);
+				if(part > max) {
+					max = part;
+				}
+			});
+			return max;
+		}
+		this.propertyUniq = function(node, property) {
 		    var value = $(cloneNode).attr(property);
 		    if(typeof value != "undefined") {
-		        var charPart = value.replace(/\d+/, "");
-		        var numPart = value.replace(/[A-Z|a-z]+/,"");
-		        console.log(charPart + (parseInt(numPart) + 1));
-		        $(cloneNode).attr(property, charPart + (parseInt(numPart) + 1));
+		        var charPart = getPropertyPart(value, /\d+/);
+		        var numPart = getPropertyPart(value, /[A-Z|a-z]+/);
+		        var tagName = node[0].tagName.toLowerCase();
+		        var maxNum = this.findMaxNumPart(tagName, charPart, property);
+		        var newValue = charPart + (parseInt(maxNum) + 1);
+		        node.attr(property, newValue);
 		    }
 		}
-		this.propertyAutoAdd("id");
-		this.propertyAutoAdd("name");
+		this.propertyUniq($(cloneNode), "id");
+		this.propertyUniq($(cloneNode), "name");
 		$(cloneNode).children().each(function(index, ele) {
 		    delCloneNodeId(ele);
 		});

@@ -72,7 +72,8 @@ function testListDivCondation() {
 	$divjump->addElem("点赞", new Input("praise"));
 	$divjump->addElem("评论", new Input("comment"));
 	$div->addElem("功能", $divjump, ["类型" => 1]);
-	$listElem = new ListElem("", $div, $imgList);
+	$listElem = new ListElem("", $div);
+	$listElem ->value = $imgList;
 	outputhtml("test", $listElem->innerHtml);
 }
 
@@ -144,13 +145,17 @@ function testInnerHtml() {
 
 function testListDivList() {
 	$div = new Div("div");
-	$init = ["www.baidu.com"];
-	$le = new ListElem("list", new Input("", "text"),  $init);
-	$div->addElem("section", $le);
-	$outlist = new ListElem("outlist", $div);
+	$init = [
+	 ["www.baidu.com", "www.baidu.com", "www.baidu.com", "www.baidu.com"],
+	 ["www.baidu.com", "www.baidu.com", "www.baidu.com", "www.baidu.com"],
+	]; 
+	$le = new ListElem("a", new Input("", "text"));
+	$outlist = new ListElem("outlist", $le);
+	$outlist->value = $init;
 	outputhtml("test", $outlist->innerHtml);
 }
 
-testDivCondation();
+testListDivList();
 #testClone();
 #echo date("Ymd H:i:s", time());
+
