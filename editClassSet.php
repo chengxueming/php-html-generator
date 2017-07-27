@@ -311,7 +311,7 @@ JS;
     }
 }
 
-class uploadCdnImage extends BaseEdit {
+class UploadCdnImage extends BaseEdit {
     public function __construct($name , $c, $isShowPreview = false, $m="uploadImage", $value = "") {
         parent::__construct($name);
         $onclickJs =<<<JS

@@ -2,6 +2,7 @@
 require("../autoload.php");
 function testDivCondation() {
 	$img = [
+	[
 		"url"=>"a girl ride on a horse",
 		"type"=>1, 
 		"jump_url"=>[
@@ -24,6 +25,31 @@ function testDivCondation() {
 				"ansewer5",
 			]
 		],
+	],	
+	[
+		"url"=>"a girl ride on a horse",
+		"type"=>1, 
+		"jump_url"=>[
+			"praise"=>"a url to post a praise",
+			"comment"=>"a url to post a comment",
+			"name" => [
+				"frst"=>"jhon",
+				"last"=>"ham",
+				"type"=>1,
+				"addion"=>[
+					"before"=>12,
+					"after"=>13,
+				]
+			],
+			"more"=>[
+				"ansewer1",
+				"ansewer2",
+				"ansewer3",
+				"ansewer4",
+				"ansewer5",
+			]
+		],
+	],
 	];
 	$div = new Div("");
 	$div->addElem("内容", new Input("url"));
@@ -41,9 +67,10 @@ function testDivCondation() {
 	$divaddion->addElem("AFTER", new Input("after"));
 	$divname->addElem("TYPE", new Select("type", [0=>"normal", 1=>"not"]));
 	$divname->addElem("ADDTION", $divaddion, ["TYPE"=>1]);
-	$divjump->addElem("MORE", new ListElem("more", new Input(""), $img["jump_url"]["more"]));
-	$div->value = $img;
-	outputhtml("test", $div->innerHtml);
+	$divjump->addElem("MORE", new ListElem("more", new Input("")));
+	$le = new ListElem("", $div);
+	$le->value = $img;
+	outputhtml("test", $le->innerHtml);
 }
 
 function testListDivCondation() {
@@ -155,7 +182,75 @@ function testListDivList() {
 	outputhtml("test", $outlist->innerHtml);
 }
 
-testListDivList();
+
+function tsetExam() {
+	$json = file_get_contents("./listening.txt");
+	$arr = json_decode($json, true);
+	$part = new Div("");
+	$part->addElem("类型", new Input("type", "text"));
+	$part->addElem("头部", new Input("head", "text"));
+	function getSection() {
+		function getPassage() {
+			$sectionPassage = new Div("");
+			$sectionPassage->addElem("名称", new Input("passage_name"));
+			$sectionPassage->addElem("引导名称", new Input("passage_directins"));
+			$sectionPassage->addElem("图片", new UploadCdnImage("image", "pc_prize"));
+			$le = new ListElem("passage", $sectionPassage);
+			$passageContent = new Div("content");
+			$passageContent->addElem("内容类型", new Input("content_type"));
+			$sectionPassage->addElem("content", $passageContent);
+			$questionBody = new Div("");
+			$questionBody->addElem("序号", new Input("number", "number"));
+			$questionBody->addElem("问题内容", new Input("question_body ", "number"));
+			$questionBody->addElem("问题名称", new Input("answer_name", "number"));
+			$answer = new ListElem("answer", new Input(""));
+			$questionBody->addElem("答案列表", $answer);
+			$question = new ListElem("", $questionBody);
+			$sectionPassage->addElem("问题", $question);
+			return $le;
+		}
+		$sectionBody = new Div("");
+		$sectionBody->addElem("名称", new Input("name"));
+		$sectionBody->addElem("引导名称", new Input("name_directions"));
+		$sectionBody->addElem("引导内容", new Input("directions"));
+		$sectionBody->addElem("主干", getPassage());
+		return $sectionBody;
+	}
+	$section = new ListElem("section", getSection());
+	$part->addElem("节", $section);
+	$part->value = $arr;
+	outputhtml("test", $part->innerHtml);
+}
+
+function testPassage() {
+	$json = file_get_contents("./listening.txt");
+	$arr = json_decode($json, true);
+	function getPassage() {
+		$sectionPassage = new Div("");
+		$sectionPassage->addElem("名称", new Input("passage_name"));
+		$sectionPassage->addElem("引导名称", new Input("passage_directins"));
+		$sectionPassage->addElem("图片", new UploadCdnImage("image", "pc_prize"));
+		$le = new ListElem("passage", $sectionPassage);
+		$passageContent = new Div("content");
+		$passageContent->addElem("内容类型", new Input("content_type"));
+		$sectionPassage->addElem("content", $passageContent);
+		$questionBody = new Div("");
+		$questionBody->addElem("序号", new Input("number", "number"));
+		$questionBody->addElem("问题内容", new Input("question_body ", "number"));
+		$questionBody->addElem("问题名称", new Input("answer_name", "number"));
+		$answer = new ListElem("answer", new Input(""));
+		$questionBody->addElem("答案列表", $answer);
+		$question = new ListElem("", $questionBody);
+		$sectionPassage->addElem("问题", $question);
+		return $le;
+	}
+	$pass = getPassage();
+	$pass->value = $arr["section"][0]["passage"];
+	outputhtml("test", $pass->innerHtml);
+}
+
+
+
+testPassage();
 #testClone();
 #echo date("Ymd H:i:s", time());
-
