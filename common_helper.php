@@ -16,15 +16,28 @@ function elem($name, $attrs = [], $childrens = []){
     return $e;
 }
 
+function addTitle($tag, $title, $indent = 3) {
+    $nbsp = "";
+    for($i = 0; $i < $indent; $i++) {
+        $nbsp .= "&nbsp;";
+    }
+    if(!empty($title)) {
+        $title .= "：";
+    }   
+    return elem("", [], ["{$nbsp}{$title}", $tag]);
+}
+
+function get_new_gen_attr($old_attr, $add) {
+    $num_part =  preg_replace("/[a-zA-Z]+/","", $old_attr);
+    $str_part = preg_replace("/\d+/", "", $old_attr);
+    return $str_part.($num_part + $add);
+}
+
 function incrPropertys($propertys, $elem) {
     if(!is_array($propertys)) {
         $propertys = [$propertys];
     }
-    $new_attr_func = function($old_attr) {
-        $num_part =  preg_replace("/[a-zA-Z]+/","", $old_attr);
-        $str_part = preg_replace("/\d+/", "", $old_attr);
-        return $str_part.($num_part + 1);
-    };
+    $new_attr_func = function($old_attr) {return get_new_gen_attr($old_attr, 1);};
     $new_script_func = function($old_script) use ($new_attr_func) {
         return preg_replace_callback(
             ["/[\"|']#(.*)[\"|']/", "/getElementById\([\"|'](.*)[\"|']\)/"],

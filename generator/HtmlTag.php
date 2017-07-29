@@ -16,8 +16,12 @@ class HtmlTag extends Markup
     private $innerHtml = null;
 
     public function __get($property) {
-        if($property == "tag") {
-            return $this->$property;
+        if($property == "tagName") {
+            $tag = "text";
+            if(!empty($this->tag)) {
+                $tag = $this->tag;
+            }
+            return strtoupper($tag);
         }
         if($property == "innerHtml") {
             $innerHtml = "";
@@ -70,9 +74,18 @@ class HtmlTag extends Markup
      */
     public function removeClass($value)
     {
-        if (!is_null($this->attributeList['class'])) {
+        if (isset($this->attributeList['class']) && !is_null($this->attributeList['class'])) {
             unset($this->attributeList['class'][array_search($value, $this->attributeList['class'])]);
         }
         return $this;
+    }
+
+    public function hasClass($class) 
+    {
+        if (!isset($this->attributeList['class']) || is_null($this->attributeList['class'])) {
+            return false;
+        }
+        $classes = $this->attributeList['class'];
+        return in_array($class, $classes);
     }
 }

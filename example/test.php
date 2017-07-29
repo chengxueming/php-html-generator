@@ -70,7 +70,7 @@ function testDivCondation() {
 	$divjump->addElem("MORE", new ListElem("more", new Input("")));
 	$le = new ListElem("", $div);
 	$le->value = $img;
-	outputhtml("test", $le->innerHtml);
+	outputhtml("test", $le->innerHtml, "normal");
 }
 
 function testListDivCondation() {
@@ -144,15 +144,31 @@ function testListTable() {
 	outputhtml("test", $t->render());
 }
 
-function outputhtml($file, $code) {
-    $head =<<<EOF
+function outputhtml($file, $code, $type = "boot") {
+    $boot_head =<<<EOF
         <meta charset="utf-8" />
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <!-- Bootstrap and Datatables Bootstrap theme (OPTIONAL) -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <script type = "text/javascript" src="static/js/common.js"></script>
+        <style type="text/css" src="common.css"></style>
+EOF;
+    $normal_head =<<<EOF
+        <meta charset="utf-8" />
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <!-- Bootstrap and Datatables Bootstrap theme (OPTIONAL) -->
         <script type = "text/javascript" src="static/js/common.js"></script>
         <style type="text/css" src="common.css"></style>
 EOF;
         #echo $head.$t->render();
-        file_put_contents("./$file.html", $head.$code);
+        if($type == "normal") {
+        	$boot_head = $normal_head;
+        }
+        file_put_contents("./$file.html", $boot_head.$code);
 }
 
 function testIncrPropertys() {
@@ -249,8 +265,59 @@ function testPassage() {
 	outputhtml("test", $pass->innerHtml);
 }
 
+function testTextNode() {
+	$span = elem("", [], ["abcdefg", "higklmk", elem("input")]);
+	echo $span;
+}
 
+function testBlock() {
+	$div = new Block("head", "Section", "alert-success");
+	$div->addElem("头部",  new Input("head"));
+	$div->addElem("说明",  new TextArea("head-instuction", "In this section, you will hear 8 short conversations and ..."));
+	$chooseDiv = new Block("haha", "选择题", "alert-warning");
+	$chooseDiv->addElem("题号",  new Input("add1"));
+	$chooseDiv->addElem("头部",  new Input("add1"));
+	$chooseDiv->addElem("问题",  new TextArea("add2", "In this section, you will hear 8 short conversations and ..."));
+	$answerDiv = new Input("haha");
+	$chooseDiv->addElem("答案", new ListElem("add3", $answerDiv));
+	$div->addElem("选择题", new ListElem("add3", $chooseDiv));
+	$form = new Form("writing_head");
+	$form->addElem("听力头部", new Input("writing_direction"));
+	$form->addElem("Section", new ListElem("add3", $div));
+	//outputhtml("test", $form->innerHtml);	
+	return $form;
+}
 
-testPassage();
+function getTranslation() {
+	$form = new Form("translation");
+	$form->addElem("翻译思路", new TextArea("thought", "本文为说明文，简要介绍了中国的旅游业。语言风格应是较正式的说明性语言，主要时态应使用一
+般现在时，也可适当使用一般过去时和现在完成时，使得译文丰富多变。"));
+	$key_word_div = new Form("");
+	$key_word_div->addElem("词汇", new Input("word"));
+	$key_word_div->addElem("翻译", new Input("means"));
+	$form->addElem("关键词译法", new ListElem("key-word", $key_word_div));
+	$form->addElem("翻译标准", new ListElem("standard", new Input("", "text", "", "large")));
+	$example = new Block("example", "", "alert-info");
+	$example->addElem("正文", new TextArea("example", "With the improvement of living standards, taking a vacation is playing..."));
+	$example->addElem("精彩点评", new ListElem("comment", new TextArea("example")));
+	$form->addElem("高分译文", $example);
+	$form->addElem("翻译技巧", new TextArea("skill", "汉语句子的主语较为灵活，不一定就是动作的执行者，而且也不限于某几种词性。相比较而言，英语句子的主语就只能是名词、代词、非谓语动词、主语从句等，而且一般是动作的执行者。"));
+	return $form;
+}
+
+function testForm() {
+	$form = new Form("writing_head");
+	$form->addElemBr("Part头", new Input("writing_head"));
+	$form->addElemBr("说 明", new TextArea("writing_direction"));
+	$form->addElemBr("图 片", new UploadCdnImage("writing_image", "pc_prize"));
+
+	$nav = new Nav("nav");
+	$nav->addElem("Translation", getTranslation());
+	$nav->addElem("写作", $form);
+	$nav->addElem("听力", testBlock());
+	outputhtml("test", $nav->innerHtml);
+} 
+
+testForm();
 #testClone();
 #echo date("Ymd H:i:s", time());
