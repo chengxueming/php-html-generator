@@ -151,22 +151,67 @@ class ListElem extends BaseEdit {
     var $subElem = null;
     var $title = "";
     var $valueList = [];
+    var $head = null;
+    var $body = null;
+    var $col_class = "";
 
-    public function __construct($name, $subElem, $column = 1, $valueList = []) {
+    public function __construct($name, $subElem, $column = 3, $valueList = []) {
         parent::__construct($name);
         #$subElem->innerHtml->addElement(elem("br"));
         $func = $subElem->valueScriptFunc;
         $this->subElem = $subElem;
         $this->innerHtml = elem("div", ["id"=>$this->id, "style"=>"display:inline;"]);
+        $this->head = elem("", []);
+        $this->innerHtml->addElement($this->head);
+        $this->setHead();
+        $class = ["row"];
+        $this->columns = $column;
+        $this->col_class = "col-md-".intval(12/$column);
+        if($subElem instanceof div) {
+            $class = [];
+            $this->col_class = "";
+        }
+
+        $this->body = elem("div", ["class"=>$class]);
+        $this->innerHtml->addElement($this->body);
         $this->value = $valueList;
-        $this->valueScript =<<<JS
-            var data = [];
-            jqNode.children("div").each(function(index, ele) {
-                var value = ($func)(jqFirstChild(ele));
-                data.push(value);
-            });
-            return data;
+
+    }
+
+    private function setHead() {
+        $outDiv =<<<JS
+        $($(this).parent("div").children("div")[0])
 JS;
+        $addJs =<<<JS
+        var outDiv = {$outDiv};
+        var cloneLastChild = outDiv.children("div:last-child")[0].cloneNode(true);
+        delCloneNodeId(cloneLastChild);
+        $(cloneLastChild).find("input").each(function(index, ele) {
+            $(ele).val("");
+        });
+        outDiv[0].appendChild(cloneLastChild);
+JS;
+        $delJs =<<<JS
+        var outDiv = {$outDiv};
+        if(outDiv.children("div").length == 1) {
+            return ;
+        }
+        var lastChild = outDiv.children("div:last-child")[0];
+        outDiv[0].removeChild(lastChild);
+JS;
+        $addBtnAttr = ["onclick"=>"$addJs;", "class"=>["btn"], "type"=>"button"];
+        $delBtnAttr = ["onclick"=>"$delJs;", "class"=>["btn"], "type"=>"button"];
+        $func = $this->subElem->valueScriptFunc;
+        $this->valueScript =<<<JS
+        var data = [];
+        jqNode.children("div").each(function(index, ele) {
+            var value = ($func)(jqFirstChild(ele));
+            data.push(value);
+        });
+        return data;
+JS;
+        $childElemList = [elem("button", $addBtnAttr, "添加{$this->title}"), elem("", [], "&nbsp;"), elem("button", $delBtnAttr, "删除{$this->title}")];
+        $this->head->content = $childElemList;
     }
 
     public function setTitle($title) {
@@ -177,33 +222,14 @@ JS;
             $this->subElem->innerHtml = elem("", [], [elem("label", [], "{$title}："), $this->subElem->innerHtml]);
         }
         //重置 innerhtml
-        $this->value = $this->valueList;
+        $this->setHead();
+        $this->setValue($this->valueList);
     }
 
     public function setValue($valueList) {
         $this->valueList = $valueList;
         $subElem = $this->subElem;
-        $mainId = $this->id;
-        $addJs =<<<JS
-        var outDiv = $(this).parent("div");
-        var cloneLastChild = outDiv.children("div:last-child")[0].cloneNode(true);
-        delCloneNodeId(cloneLastChild);
-        $(cloneLastChild).find("input").each(function(index, ele) {
-            $(ele).val("");
-        });
-        outDiv[0].appendChild(cloneLastChild);
-JS;
-        $delJs =<<<JS
-        var outDiv = $(this).parent("div");
-        if(outDiv.children("div").length == 1) {
-            return ;
-        }
-        var lastChild = outDiv.children("div:last-child")[0];
-        outDiv[0].removeChild(lastChild);
-JS;
-        $addBtnAttr = ["onclick"=>"$addJs;", "class"=>["btn"], "type"=>"button"];
-        $delBtnAttr = ["onclick"=>"$delJs;", "class"=>["btn"], "type"=>"button"];
-        $childElemList = [elem("button", $addBtnAttr, "添加{$this->title}"), elem("", [], "&nbsp;"), elem("button", $delBtnAttr, "删除{$this->title}")];
+        $childElemList = [];
         if(empty($valueList)) {
             $valueList = [""];
         }
@@ -212,10 +238,10 @@ JS;
             $subElem->value = $v;
             //防止对象指向同一个问题
             //tagIndent($subElem->innerHtml, 2);
-            $childElemList[] = elem("div", [], $subElem->innerHtml->__toString());
+            $childElemList[] = elem("div", ["class"=>[$this->col_class]], $subElem->innerHtml->__toString());
             incrPropertys(["id", "name", "onchange", "onclick"], $subElem->innerHtml);
         }
-        $this->innerHtml ->content = $childElemList;
+        $this->body->content = $childElemList;
     }
 }
 
@@ -358,7 +384,7 @@ class Block extends Div {
             array_shift($this->innerHtml->content);
         }
         if(!empty($title)) {
-            array_unshift($this->innerHtml->content, elem("", [], "&nbsp;{$title}&nbsp;：<br>&nbsp;&nbsp;&nbsp;"));
+            array_unshift($this->innerHtml->content, elem("", [], "&nbsp;<label>{$title}</label>&nbsp;：<br>&nbsp;&nbsp;&nbsp;"));
             $this->title = $title;
         }
     }
@@ -374,10 +400,22 @@ class Form extends Div {
         $this->innerHtml["class"] = ["form-inline"];
     }
 
+
+    private function addFormControl($html) {
+        $control_tags = ["INPUT", "TEXTAREA"];
+        if(in_array($html->tagName, $control_tags)) {
+            if(!$html->hasClass("form-control"))
+                $html->addClass("form-control");
+        }
+        foreach($html->content as $v)
+            $this->addFormControl($v);
+    }
+
     //套上form-group 并且添加title label
     protected function addTitle($html, $title) {
         $this->head = "&nbsp;&nbsp";
         #$html->addClass("form-control");
+        $this->addFormControl($html);
         $html = elem("", [], [elem("div", ["class"=>["form-group"]], [elem("", [], $this->head), elem("label", [], "{$title}："), $html]), $this->tail]);
         return $html;
     }

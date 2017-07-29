@@ -305,16 +305,52 @@ function getTranslation() {
 	return $form;
 }
 
-function testForm() {
-	$form = new Form("writing_head");
-	$form->addElemBr("Part头", new Input("writing_head"));
-	$form->addElemBr("说 明", new TextArea("writing_direction"));
-	$form->addElemBr("图 片", new UploadCdnImage("writing_image", "pc_prize"));
+function getWriting() {
+	$form = new Form("writing");
+	$questionTrans = new Block("questionTrans", "");
+	$questionTrans->addElem("头部", new Input("head"));
+	$questionTrans->addElem("内容", new TextArea("means"));
+	$form->addElem("题目译文", $questionTrans);
+	$form->addElem("审题构思", new ListElem("standard", new TextArea("")));
+	$form->addElem("写作提纲", new UploadCdnImage("writing_image", "pc_prize"));
+	$example = new Block("example", "");
+	$en = new Block("english", "");
+	$en->addElem("重点", new TextArea(""));
+	$en->addElem("其他", new TextArea(""));
+	$example->addElem("英文", $en);
+	$example->addElem("中文翻译", new TextArea(""));
+	$example->addElem("道长点评", new TextArea(""));
+	$form->addElem("高分范文和点评", new ListElem("example", $example));
+	$en = new Form("english");
+	$en->addElem("词汇", new Input(""));
+	$en->addElem("翻译", new Input(""));
+	$form->addElem("词汇点拨", new ListElem("example", $en));
+	$en = new Form("english");
+	$en->addElem("词汇", new Input(""));
+	$en->addElem("翻译", new Input(""));
+	$form->addElem("精彩表达", new ListElem("example", $en));
+	$en = new Form("english");
+	$en->addElem("英文", new TextArea(""));
+	$en->addElem("中文", new TextArea(""));
+	$form->addElem("佳句拓展", new ListElem("example", $en));
+	$en = new Form("english");
+	$en->addElem("英文", new TextArea(""));
+	$en->addElem("中文", new TextArea(""));
+	$form->addElem("万能模板", new ListElem("example", $en));
+	return $form;
+}
 
+function testForm() {
+	// $form = new Form("writing_head");
+	// $form->addElemBr("Part头", new Input("writing_head"));
+	// $form->addElemBr("说 明", new TextArea("writing_direction"));
+	// $form->addElemBr("图 片", new UploadCdnImage("writing_image", "pc_prize"));
 	$nav = new Nav("nav");
-	$nav->addElem("Translation", getTranslation());
-	$nav->addElem("写作", $form);
-	$nav->addElem("听力", testBlock());
+	$nav->addElem("Part I Writing", getWriting());
+	$nav->addElem("Part III Writing", new Form(""));
+	$nav->addElem("Part IV Writing", new Form(""));
+	$nav->addElem("Part V Writing", new Form(""));
+	$nav->addElem("Part VI Translation", getTranslation());
 	outputhtml("test", $nav->innerHtml);
 } 
 

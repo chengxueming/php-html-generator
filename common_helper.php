@@ -24,7 +24,7 @@ function addTitle($tag, $title, $indent = 3) {
     if(!empty($title)) {
         $title .= "：";
     }   
-    return elem("", [], ["{$nbsp}{$title}", $tag]);
+    return elem("", [], ["{$nbsp}<label>{$title}</label>", $tag]);
 }
 
 function get_new_gen_attr($old_attr, $add) {
