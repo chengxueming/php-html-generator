@@ -23,8 +23,9 @@
 			return max;
 		}
 		this.propertyUniq = function(node, property) {
+			var white_list = ["edit-toolbar", "page", "open"];
 		    var value = $(cloneNode).attr(property);
-		    if(typeof value != "undefined") {
+		    if(typeof value != "undefined" && !in_array(value, white_list)) {
 		        var charPart = getPropertyPart(value, /\d+/);
 		        var numPart = getPropertyPart(value, /[A-Z|a-z]+/);
 		        var tagName = node[0].tagName.toLowerCase();

@@ -1,112 +1,442 @@
         <meta charset="utf-8" />
+
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
         <!-- Bootstrap and Datatables Bootstrap theme (OPTIONAL) -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
         <script type = "text/javascript" src="static/js/common.js"></script>
-        <style type="text/css" src="common.css"></style><div id="Nav45998" class="well"><script></script><ul class="nav nav-tabs"><li class="active"><a href="#Nav45999" data-toggle="tab">Part I Writing</a></li><li class=""><a href="#Nav46000" data-toggle="tab">Part III Writing</a></li><li class=""><a href="#Nav46001" data-toggle="tab">Part IV Writing</a></li><li class=""><a href="#Nav46002" data-toggle="tab">Part V Writing</a></li><li class=""><a href="#Nav46003" data-toggle="tab">Part VI Translation</a></li></ul><div class="tab-content"><div id="Nav46000" class="tab-pane"><div id="Form418947" class="form-inline"><script></script></div></div><div id="Nav46001" class="tab-pane"><div id="Form900551" class="form-inline"><script></script></div></div><div id="Nav46002" class="tab-pane"><div id="Form744975" class="form-inline"><script></script></div></div><div id="Nav46003" class="tab-pane"><div id="Form130265" class="form-inline"><div class="form-group">&nbsp;&nbsp<label>翻译思路：</label><textarea rows="3" placeholder="本文为说明文，简要介绍了中国的旅游业。语言风格应是较正式的说明性语言，主要时态应使用一
-般现在时，也可适当使用一般过去时和现在完成时，使得译文丰富多变。" class="form-control input-xlarge" id="TextArea231512"></textarea></div>&nbsp;&nbsp;<label></label><div id="ListElem73345" style="display:inline;"><button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
+        <style type="text/css" src="common.css"></style>
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <style>
+        #zoom-button {
+          width: 55px;
+        }
+        #fontname-button,
+        #fontsize-button {
+          width: 45px;
+        }
+        #forecolor-button {
+          width: 50px;
+        }
+        #hilitecolor-button {
+          width: 70px;
+        }
+        #bold {
+          font-weight: bold;
+        }
+        #italic {
+          font-style: italic;
+        }
+        #underline {
+          text-decoration: underline;
+        }
+        .toolbar {
+          font-size: .75em;
+        }
+        #page {
+          width: 440px;
+          left: 50%;
+          position: relative;
+          margin-left: -226px;
+          height: 450px;
+          border: 1px solid #888;
+          box-shadow: 7px 7px 3px #ccc;
+          font-size: 11px;
+          font-family: "Lucida Grande";
+          zoom: 100%;
+          padding: 5px;
+          white-space: pre-line;
+          overflow: scroll;
+        }
+        .wrap {
+          width: 588px;
+        }
+        </style><div id="Nav1487" class="well"><script></script><ul class="nav nav-tabs"><li class="active"><a href="#Nav1488" data-toggle="tab">Part I Writing</a></li><li class=""><a href="#Nav1489" data-toggle="tab">Part III Writing</a></li><li class=""><a href="#Nav1490" data-toggle="tab">Part IV Writing</a></li><li class=""><a href="#Nav1491" data-toggle="tab">Part V Writing</a></li><li class=""><a href="#Nav1492" data-toggle="tab">Part VI Translation</a></li></ul><div class="tab-content"><div id="Nav1489" class="tab-pane"><div id="Form609064" class="form-inline"><script></script></div></div><div id="Nav1490" class="tab-pane"><div id="Form706775" class="form-inline"><script></script></div></div><div id="Nav1491" class="tab-pane"><div id="Form415105" class="form-inline"><script></script></div></div><div id="Nav1492" class="tab-pane"><div id="Form700373" class="form-inline"><div class="form-group">&nbsp;&nbsp<label>翻译思路：</label><textarea type="text" placeholder="本文为说明文，简要介绍了中国的旅游业。语言风格应是较正式的说明性语言，主要时态应使用一
+般现在时，也可适当使用一般过去时和现在完成时，使得译文丰富多变。" id="TextArea747475" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" rows="3" class="form-control"></textarea></div>&nbsp;&nbsp;<label></label><div id="ListElem634185" style="display:inline;"><button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
         var cloneLastChild = outDiv.children('div:last-child')[0].cloneNode(true);
         delCloneNodeId(cloneLastChild);
-        $(cloneLastChild).find('input').each(function(index, ele) {
-            $(ele).val('');
+        ['input','textarea'].forEach(function(tagName, index) {
+            $(cloneLastChild).find(tagName).each(function(index, ele) {
+                $(ele).val('');
+            });
         });
-        outDiv[0].appendChild(cloneLastChild);;" class="btn" type="button">添加关键词译法</button>&nbsp;<button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
+        outDiv[0].appendChild(cloneLastChild);;" class="btn" type="button">添加关键词译法<span aria-hidden="true" class="glyphicon glyphicon-plus"></span></button>&nbsp;<button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
         if(outDiv.children('div').length == 1) {
             return ;
         }
         var lastChild = outDiv.children('div:last-child')[0];
-        outDiv[0].removeChild(lastChild);;" class="btn" type="button">删除关键词译法</button><div class=""><div class=""><div id="Form13134" class="form-inline"><div class="form-group">&nbsp;&nbsp<label>词汇：</label><input type="text" class="input-medium form-control" value=""/></div><div class="form-group">&nbsp;&nbsp<label>翻译：</label><input type="text" class="input-medium form-control" value=""/></div><script></script></div></div></div></div>&nbsp;&nbsp;<label></label><div id="ListElem795462" style="display:inline;"><button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
+        outDiv[0].removeChild(lastChild);;" class="btn" type="button">删除关键词译法</button><div class=""><div class=""><div id="Form371540" class="form-inline"><div class="form-group">&nbsp;&nbsp<label>词汇：</label><input type="text" placeholder="" id="Input150601" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" class="input-medium form-control" value=""/></div><div class="form-group">&nbsp;&nbsp<label>翻译：</label><input type="text" placeholder="" id="Input902686" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" class="input-medium form-control" value=""/></div><script></script></div></div></div></div>&nbsp;&nbsp;<label></label><div id="ListElem430471" style="display:inline;"><button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
         var cloneLastChild = outDiv.children('div:last-child')[0].cloneNode(true);
         delCloneNodeId(cloneLastChild);
-        $(cloneLastChild).find('input').each(function(index, ele) {
-            $(ele).val('');
+        ['input','textarea'].forEach(function(tagName, index) {
+            $(cloneLastChild).find(tagName).each(function(index, ele) {
+                $(ele).val('');
+            });
         });
-        outDiv[0].appendChild(cloneLastChild);;" class="btn" type="button">添加翻译标准</button>&nbsp;<button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
+        outDiv[0].appendChild(cloneLastChild);;" class="btn" type="button">添加翻译标准<span aria-hidden="true" class="glyphicon glyphicon-plus"></span></button>&nbsp;<button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
         if(outDiv.children('div').length == 1) {
             return ;
         }
         var lastChild = outDiv.children('div:last-child')[0];
-        outDiv[0].removeChild(lastChild);;" class="btn" type="button">删除翻译标准</button><div class="row"><div class="col-md-4"><label>翻译标准：</label><input type="text" class="input-xlarge" value=""/></div></div></div>&nbsp;&nbsp;<label></label><div id="Block763176" class="block alert alert-info form-inline">&nbsp;<label>高分译文</label>&nbsp;：<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>正文：</label><textarea rows="3" placeholder="With the improvement of living standards, taking a vacation is playing..." class="form-control input-xlarge" id="TextArea912227"></textarea>&nbsp;&nbsp;<label></label><div id="ListElem154380" style="display:inline;"><button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
+        outDiv[0].removeChild(lastChild);;" class="btn" type="button">删除翻译标准</button><div class="row"><div class="col-md-4"><label>翻译标准：</label><input type="text" placeholder="" id="Input572877" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" class="input-xlarge" value=""/></div></div></div>&nbsp;&nbsp;<label></label><div id="Block502085" class="block alert alert-info form-inline">&nbsp;<label>高分译文</label>&nbsp;：<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>正文：</label><textarea type="text" placeholder="With the improvement of living standards, taking a vacation is playing..." id="TextArea737475" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" rows="3" class="form-control"></textarea>&nbsp;&nbsp;<label></label><div id="ListElem474250" style="display:inline;"><button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
         var cloneLastChild = outDiv.children('div:last-child')[0].cloneNode(true);
         delCloneNodeId(cloneLastChild);
-        $(cloneLastChild).find('input').each(function(index, ele) {
-            $(ele).val('');
+        ['input','textarea'].forEach(function(tagName, index) {
+            $(cloneLastChild).find(tagName).each(function(index, ele) {
+                $(ele).val('');
+            });
         });
-        outDiv[0].appendChild(cloneLastChild);;" class="btn" type="button">添加精彩点评</button>&nbsp;<button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
+        outDiv[0].appendChild(cloneLastChild);;" class="btn" type="button">添加精彩点评<span aria-hidden="true" class="glyphicon glyphicon-plus"></span></button>&nbsp;<button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
         if(outDiv.children('div').length == 1) {
             return ;
         }
         var lastChild = outDiv.children('div:last-child')[0];
-        outDiv[0].removeChild(lastChild);;" class="btn" type="button">删除精彩点评</button><div class="row"><div class="col-md-4"><label>精彩点评：</label><textarea rows="3" placeholder="" class="form-control input-xlarge" id="TextArea409954"></textarea></div></div></div><script></script></div><div class="form-group">&nbsp;&nbsp<label>翻译技巧：</label><textarea rows="3" placeholder="汉语句子的主语较为灵活，不一定就是动作的执行者，而且也不限于某几种词性。相比较而言，英语句子的主语就只能是名词、代词、非谓语动词、主语从句等，而且一般是动作的执行者。" class="form-control input-xlarge" id="TextArea877685"></textarea></div><script></script></div></div><div id="Nav45999" class="tab-pane active in"><div id="Form724305" class="form-inline">&nbsp;&nbsp;<label></label><div id="Block718116" class="block alert alert-success form-inline">&nbsp;<label>题目译文</label>&nbsp;：<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>头部：</label><input type="text" class="input-medium form-control" value=""/>&nbsp;&nbsp;&nbsp;<label>内容：</label><textarea rows="3" placeholder="" class="form-control input-xlarge" id="TextArea455135"></textarea><script></script></div>&nbsp;&nbsp;<label></label><div id="ListElem657996" style="display:inline;"><button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
+        outDiv[0].removeChild(lastChild);;" class="btn" type="button">删除精彩点评</button><div class="row"><div class="col-md-4"><label>精彩点评：</label><textarea type="text" placeholder="" id="TextArea405442" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" rows="3" value=""></textarea></div></div></div><script></script></div><div class="form-group">&nbsp;&nbsp<label>翻译技巧：</label><textarea type="text" placeholder="汉语句子的主语较为灵活，不一定就是动作的执行者，而且也不限于某几种词性。相比较而言，英语句子的主语就只能是名词、代词、非谓语动词、主语从句等，而且一般是动作的执行者。" id="TextArea341479" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" rows="3" class="form-control"></textarea></div><script></script></div></div><div id="Nav1488" class="tab-pane active in"><div id="Form180782" class="form-inline">&nbsp;&nbsp;<label></label><div id="Block477512" class="block alert alert-success form-inline">&nbsp;<label>题目译文</label>&nbsp;：<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>头部：</label><input type="text" placeholder="" id="Input899971" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" class="input-medium form-control"/>&nbsp;&nbsp;&nbsp;<label>内容：</label><textarea type="text" placeholder="" id="TextArea104290" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" rows="3" class="form-control"></textarea><script></script></div>&nbsp;&nbsp;<label></label><div id="ListElem220323" style="display:inline;"><button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
         var cloneLastChild = outDiv.children('div:last-child')[0].cloneNode(true);
         delCloneNodeId(cloneLastChild);
-        $(cloneLastChild).find('input').each(function(index, ele) {
-            $(ele).val('');
+        ['input','textarea'].forEach(function(tagName, index) {
+            $(cloneLastChild).find(tagName).each(function(index, ele) {
+                $(ele).val('');
+            });
         });
-        outDiv[0].appendChild(cloneLastChild);;" class="btn" type="button">添加审题构思</button>&nbsp;<button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
+        outDiv[0].appendChild(cloneLastChild);;" class="btn" type="button">添加审题构思<span aria-hidden="true" class="glyphicon glyphicon-plus"></span></button>&nbsp;<button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
         if(outDiv.children('div').length == 1) {
             return ;
         }
         var lastChild = outDiv.children('div:last-child')[0];
-        outDiv[0].removeChild(lastChild);;" class="btn" type="button">删除审题构思</button><div class="row"><div class="col-md-4"><label>审题构思：</label><textarea rows="3" placeholder="" class="form-control input-xlarge" id="TextArea177856"></textarea></div></div></div><div class="form-group">&nbsp;&nbsp<label>写作提纲：</label><div id="UploadCdnImage93162" class="input-medium" style="display:inline"><input type="text" id="input6158" name="input6158" value="" class="form-control"/><input id="input9183" type="file" name="input9183" class="form-control"/><button onclick="            var inputText = $($(this).closest('div').find('input[type=\'text\']')[0]);
+        outDiv[0].removeChild(lastChild);;" class="btn" type="button">删除审题构思</button><div class="row"><div class="col-md-3"><label>审题构思：</label><textarea type="text" placeholder="" id="TextArea209928" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" rows="3" value=""></textarea></div></div></div><div class="form-group">&nbsp;&nbsp<label>写作提纲：</label><div id="UploadCdnImage151575" class="input-medium" style="display:inline"><input type="text" id="input5581" name="input5581" value="" class="form-control"/><input id="input3127" type="file" name="input3127" class="form-control"/><button onclick="            var inputText = $($(this).closest('div').find('input[type=\'text\']')[0]);
             var inputFile = $($(this).closest('div').find('input[type=\'file\']')[0]);
-            uploadImg(inputFile, inputText, 'pc_prize', 'uploadImage');">上传</button></div></div>&nbsp;&nbsp;<label></label><div id="ListElem812321" style="display:inline;"><button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
+            uploadImg(inputFile, inputText, 'pc_prize', 'uploadImage');">上传</button></div></div>&nbsp;&nbsp;<label></label><div id="ListElem104412" style="display:inline;"><button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
         var cloneLastChild = outDiv.children('div:last-child')[0].cloneNode(true);
         delCloneNodeId(cloneLastChild);
-        $(cloneLastChild).find('input').each(function(index, ele) {
-            $(ele).val('');
+        ['input','textarea'].forEach(function(tagName, index) {
+            $(cloneLastChild).find(tagName).each(function(index, ele) {
+                $(ele).val('');
+            });
         });
-        outDiv[0].appendChild(cloneLastChild);;" class="btn" type="button">添加高分范文和点评</button>&nbsp;<button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
+        outDiv[0].appendChild(cloneLastChild);;" class="btn" type="button">添加高分范文和点评<span aria-hidden="true" class="glyphicon glyphicon-plus"></span></button>&nbsp;<button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
         if(outDiv.children('div').length == 1) {
             return ;
         }
         var lastChild = outDiv.children('div:last-child')[0];
-        outDiv[0].removeChild(lastChild);;" class="btn" type="button">删除高分范文和点评</button><div class=""><div class=""><div id="Block41792" class="block alert alert-success form-inline">&nbsp;<label>高分范文和点评</label>&nbsp;：<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label></label><div id="Block172063" class="block alert alert-success form-inline">&nbsp;<label>英文</label>&nbsp;：<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>重点：</label><textarea rows="3" placeholder="" class="form-control input-xlarge" id="TextArea245141"></textarea>&nbsp;&nbsp;&nbsp;<label>其他：</label><textarea rows="3" placeholder="" class="form-control input-xlarge" id="TextArea889790"></textarea><script></script></div>&nbsp;&nbsp;&nbsp;<label>中文翻译：</label><textarea rows="3" placeholder="" class="form-control input-xlarge" id="TextArea461660"></textarea>&nbsp;&nbsp;&nbsp;<label>道长点评：</label><textarea rows="3" placeholder="" class="form-control input-xlarge" id="TextArea295841"></textarea><script></script></div></div></div></div>&nbsp;&nbsp;<label></label><div id="ListElem120997" style="display:inline;"><button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
+        outDiv[0].removeChild(lastChild);;" class="btn" type="button">删除高分范文和点评</button><div class=""><div class=""><div id="Block749458" class="block alert alert-success form-inline">&nbsp;<label>高分范文和点评</label>&nbsp;：<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label></label><div id="Block197307" class="block alert alert-success form-inline">&nbsp;<label>英文</label>&nbsp;：<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>重点：</label><textarea type="text" placeholder="" id="TextArea561597" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" rows="3"></textarea>&nbsp;&nbsp;&nbsp;<label>其他：</label><textarea type="text" placeholder="" id="TextArea730647" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" rows="3" value=""></textarea><script></script></div>&nbsp;&nbsp;&nbsp;<label>中文翻译：</label><textarea type="text" placeholder="" id="TextArea160570" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" rows="3"></textarea>&nbsp;&nbsp;&nbsp;<label>道长点评：</label><textarea type="text" placeholder="" id="TextArea256695" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" rows="3" value=""></textarea><script></script></div></div></div></div>&nbsp;&nbsp;<label></label><div id="ListElem480378" style="display:inline;"><button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
         var cloneLastChild = outDiv.children('div:last-child')[0].cloneNode(true);
         delCloneNodeId(cloneLastChild);
-        $(cloneLastChild).find('input').each(function(index, ele) {
-            $(ele).val('');
+        ['input','textarea'].forEach(function(tagName, index) {
+            $(cloneLastChild).find(tagName).each(function(index, ele) {
+                $(ele).val('');
+            });
         });
-        outDiv[0].appendChild(cloneLastChild);;" class="btn" type="button">添加词汇点拨</button>&nbsp;<button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
+        outDiv[0].appendChild(cloneLastChild);;" class="btn" type="button">添加词汇点拨<span aria-hidden="true" class="glyphicon glyphicon-plus"></span></button>&nbsp;<button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
         if(outDiv.children('div').length == 1) {
             return ;
         }
         var lastChild = outDiv.children('div:last-child')[0];
-        outDiv[0].removeChild(lastChild);;" class="btn" type="button">删除词汇点拨</button><div class=""><div class=""><div id="Form587236" class="form-inline"><div class="form-group">&nbsp;&nbsp<label>词汇：</label><input type="text" class="input-medium form-control" value=""/></div><div class="form-group">&nbsp;&nbsp<label>翻译：</label><input type="text" class="input-medium form-control" value=""/></div><script></script></div></div></div></div>&nbsp;&nbsp;<label></label><div id="ListElem512572" style="display:inline;"><button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
+        outDiv[0].removeChild(lastChild);;" class="btn" type="button">删除词汇点拨</button><div class=""><div class=""><div id="Form660283" class="form-inline"><div class="form-group">&nbsp;&nbsp<label>词汇：</label><input type="text" placeholder="" id="Input45816" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" class="input-medium form-control"/></div><div class="form-group">&nbsp;&nbsp<label>翻译：</label><input type="text" placeholder="" id="Input48774" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" class="input-medium form-control" value=""/></div><script></script></div></div></div></div>&nbsp;&nbsp;<label></label><div id="ListElem534401" style="display:inline;"><button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
         var cloneLastChild = outDiv.children('div:last-child')[0].cloneNode(true);
         delCloneNodeId(cloneLastChild);
-        $(cloneLastChild).find('input').each(function(index, ele) {
-            $(ele).val('');
+        ['input','textarea'].forEach(function(tagName, index) {
+            $(cloneLastChild).find(tagName).each(function(index, ele) {
+                $(ele).val('');
+            });
         });
-        outDiv[0].appendChild(cloneLastChild);;" class="btn" type="button">添加精彩表达</button>&nbsp;<button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
+        outDiv[0].appendChild(cloneLastChild);;" class="btn" type="button">添加精彩表达<span aria-hidden="true" class="glyphicon glyphicon-plus"></span></button>&nbsp;<button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
         if(outDiv.children('div').length == 1) {
             return ;
         }
         var lastChild = outDiv.children('div:last-child')[0];
-        outDiv[0].removeChild(lastChild);;" class="btn" type="button">删除精彩表达</button><div class=""><div class=""><div id="Form969544" class="form-inline"><div class="form-group">&nbsp;&nbsp<label>词汇：</label><input type="text" class="input-medium form-control" value=""/></div><div class="form-group">&nbsp;&nbsp<label>翻译：</label><input type="text" class="input-medium form-control" value=""/></div><script></script></div></div></div></div>&nbsp;&nbsp;<label></label><div id="ListElem831955" style="display:inline;"><button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
+        outDiv[0].removeChild(lastChild);;" class="btn" type="button">删除精彩表达</button><div class=""><div class=""><div id="Form494312" class="form-inline"><div class="form-group">&nbsp;&nbsp<label>词汇：</label><input type="text" placeholder="" id="Input498854" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" class="input-medium form-control"/></div><div class="form-group">&nbsp;&nbsp<label>翻译：</label><input type="text" placeholder="" id="Input791073" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" class="input-medium form-control" value=""/></div><script></script></div></div></div></div>&nbsp;&nbsp;<label></label><div id="ListElem609887" style="display:inline;"><button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
         var cloneLastChild = outDiv.children('div:last-child')[0].cloneNode(true);
         delCloneNodeId(cloneLastChild);
-        $(cloneLastChild).find('input').each(function(index, ele) {
-            $(ele).val('');
+        ['input','textarea'].forEach(function(tagName, index) {
+            $(cloneLastChild).find(tagName).each(function(index, ele) {
+                $(ele).val('');
+            });
         });
-        outDiv[0].appendChild(cloneLastChild);;" class="btn" type="button">添加佳句拓展</button>&nbsp;<button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
+        outDiv[0].appendChild(cloneLastChild);;" class="btn" type="button">添加佳句拓展<span aria-hidden="true" class="glyphicon glyphicon-plus"></span></button>&nbsp;<button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
         if(outDiv.children('div').length == 1) {
             return ;
         }
         var lastChild = outDiv.children('div:last-child')[0];
-        outDiv[0].removeChild(lastChild);;" class="btn" type="button">删除佳句拓展</button><div class=""><div class=""><div id="Form506994" class="form-inline"><div class="form-group">&nbsp;&nbsp<label>英文：</label><textarea rows="3" placeholder="" class="form-control input-xlarge" id="TextArea382759"></textarea></div><div class="form-group">&nbsp;&nbsp<label>中文：</label><textarea rows="3" placeholder="" class="form-control input-xlarge" id="TextArea624247"></textarea></div><script></script></div></div></div></div>&nbsp;&nbsp;<label></label><div id="ListElem423550" style="display:inline;"><button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
+        outDiv[0].removeChild(lastChild);;" class="btn" type="button">删除佳句拓展</button><div class=""><div class=""><div id="Form201514" class="form-inline"><div class="form-group">&nbsp;&nbsp<label>英文：</label><textarea type="text" placeholder="" id="TextArea114839" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" rows="3" class="form-control"></textarea></div><div class="form-group">&nbsp;&nbsp<label>中文：</label><textarea type="text" placeholder="" id="TextArea204624" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" rows="3" class="form-control" value=""></textarea></div><script></script></div></div></div></div>&nbsp;&nbsp;<label></label><div id="ListElem550742" style="display:inline;"><button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
         var cloneLastChild = outDiv.children('div:last-child')[0].cloneNode(true);
         delCloneNodeId(cloneLastChild);
-        $(cloneLastChild).find('input').each(function(index, ele) {
-            $(ele).val('');
+        ['input','textarea'].forEach(function(tagName, index) {
+            $(cloneLastChild).find(tagName).each(function(index, ele) {
+                $(ele).val('');
+            });
         });
-        outDiv[0].appendChild(cloneLastChild);;" class="btn" type="button">添加万能模板</button>&nbsp;<button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
+        outDiv[0].appendChild(cloneLastChild);;" class="btn" type="button">添加万能模板<span aria-hidden="true" class="glyphicon glyphicon-plus"></span></button>&nbsp;<button onclick="        var outDiv =         $($(this).parent('div').children('div')[0]);
         if(outDiv.children('div').length == 1) {
             return ;
         }
         var lastChild = outDiv.children('div:last-child')[0];
-        outDiv[0].removeChild(lastChild);;" class="btn" type="button">删除万能模板</button><div class=""><div class=""><div id="Form167368" class="form-inline"><div class="form-group">&nbsp;&nbsp<label>英文：</label><textarea rows="3" placeholder="" class="form-control input-xlarge" id="TextArea888479"></textarea></div><div class="form-group">&nbsp;&nbsp<label>中文：</label><textarea rows="3" placeholder="" class="form-control input-xlarge" id="TextArea115845"></textarea></div><script></script></div></div></div></div><script></script></div></div></div></div>
+        outDiv[0].removeChild(lastChild);;" class="btn" type="button">删除万能模板</button><div class=""><div class=""><div id="Form250171" class="form-inline"><div class="form-group">&nbsp;&nbsp<label>英文：</label><textarea type="text" placeholder="" id="TextArea985428" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" rows="3" class="form-control"></textarea></div><div class="form-group">&nbsp;&nbsp<label>中文：</label><textarea type="text" placeholder="" id="TextArea505958" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" rows="3" class="form-control" value=""></textarea></div><script></script></div></div></div></div><script></script></div></div></div></div><div class="wrap" id="edit-toolbar" title="test">
+  <div class="toolbar">
+      <button id="print">Print</button>
+      <button id="undo">Undo</button>
+      <button id="redo">Redo</button>
+      <select id="zoom">
+        <option selected disabled>Zoom</option>
+        <option>50%</option>
+        <option>75%</option>
+        <option>90%</option>
+        <option>100%</option>
+        <option>125%</option>
+        <option>150%</option>
+        <option>200%</option>
+      </select>
+      <select id="fontname">
+        <option selected disabled>Font</option>
+        <option>Arial</option>
+        <option>Comic Sans MS</option>
+        <option>Courier New</option>
+        <option>Georgia</option>
+        <option>Impact</option>
+        <option>Lucida Grande</option>
+        <option>Times New Roman</option>
+        <option>Verdana</option>
+      </select>
+      <select id="fontsize">
+        <option selected disabled>Size</option>
+        <option value="1">8px</option>
+        <option value="2">9px</option>
+        <option value="3">10px</option>
+        <option value="4">11px</option>
+        <option value="5">12px</option>
+        <option value="6">14px</option>
+        <option value="7">18px</option>
+        <option value="8">24px</option>
+        <option value="9">30px</option>
+        <option value="10">36px</option>
+      </select>
+      <select id="hilitecolor" title="Background color">
+        <option selected disabled>Highlight</option>
+        <option value="white">None</option>
+        <option value="red">Red</option>
+        <option value="yellow">Yellow</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+        <option value="grey">Grey</option>
+        <option value="purple">Purple</option>
+        <option value="orange">Orange</option>
+      </select>
+      <select id="forecolor" title="Color">
+        <option selected disabled>Color</option>
+        <option value="black">Black</option>
+        <option value="white">White</option>
+        <option value="red">Red</option>
+        <option value="yellow">Yellow</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+        <option value="#ccc">Grey</option>
+        <option value="purple">Purple</option>
+        <option value="orange">Orange</option>
+      </select>
+      <button id="bold">B</button>
+      <button id="italic">I</button>
+      <button id="underline">U</button>
+ 
+  </div>
+  <pre id="page" contenteditable="true">
+
+  </pre>
+</div>
+ <script>
+$( function() {
+  var page = $( "#page" );
+  var basicControls = [ "#print", "#bold", "#underline", "#italic", "#undo", "#redo" ];
+  var valueControls = [ "#fontsize", "#forecolor", "#hilitecolor", "#backcolor", "fontname" ];
+  page.resizable();
+
+  $( "#print" ).button({
+    "icon": "ui-icon-print",
+    "showLabel": false
+  });
+  $( "#redo" ).button({
+    "icon": "ui-icon-arrowreturnthick-1-e",
+    "showLabel": false
+  });
+  $( "#undo" ).button({
+    "icon": "ui-icon-arrowreturnthick-1-w",
+    "showLabel": false
+  });
+
+  $( ".toolbar" ).controlgroup();
+  $( "#zoom" ).on( "selectmenuchange", function() {
+    page.css({ "zoom": $( this ).val() });
+  })
+  $( function() {
+    $( "#edit-toolbar" ).dialog({
+      modal: true,
+      autoOpen: false,
+    });
+  } );
+  $( basicControls.concat( valueControls ).join( ", " ) ).on( "click change selectmenuchange",
+    function() {
+      document.execCommand(
+        this.id,
+        false,
+        $( this ).val()
+      );
+    } );
+} );
+</script>

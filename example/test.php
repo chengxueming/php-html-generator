@@ -147,15 +147,66 @@ function testListTable() {
 function outputhtml($file, $code, $type = "boot") {
     $boot_head =<<<EOF
         <meta charset="utf-8" />
+
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
         <!-- Bootstrap and Datatables Bootstrap theme (OPTIONAL) -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
         <script type = "text/javascript" src="static/js/common.js"></script>
         <style type="text/css" src="common.css"></style>
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <style>
+        #zoom-button {
+          width: 55px;
+        }
+        #fontname-button,
+        #fontsize-button {
+          width: 45px;
+        }
+        #forecolor-button {
+          width: 50px;
+        }
+        #hilitecolor-button {
+          width: 70px;
+        }
+        #bold {
+          font-weight: bold;
+        }
+        #italic {
+          font-style: italic;
+        }
+        #underline {
+          text-decoration: underline;
+        }
+        .toolbar {
+          font-size: .75em;
+        }
+        #page {
+          width: 440px;
+          left: 50%;
+          position: relative;
+          margin-left: -226px;
+          height: 450px;
+          border: 1px solid #888;
+          box-shadow: 7px 7px 3px #ccc;
+          font-size: 11px;
+          font-family: "Lucida Grande";
+          zoom: 100%;
+          padding: 5px;
+          white-space: pre-line;
+          overflow: scroll;
+        }
+        .wrap {
+          width: 588px;
+        }
+        .form-group {
+			width: 100%;
+        }
+        </style>
 EOF;
     $normal_head =<<<EOF
         <meta charset="utf-8" />
@@ -168,6 +219,7 @@ EOF;
         if($type == "normal") {
         	$boot_head = $normal_head;
         }
+        $code .= file_get_contents("./static/edittool.html");
         file_put_contents("./$file.html", $boot_head.$code);
 }
 
@@ -311,7 +363,7 @@ function getWriting() {
 	$questionTrans->addElem("头部", new Input("head"));
 	$questionTrans->addElem("内容", new TextArea("means"));
 	$form->addElem("题目译文", $questionTrans);
-	$form->addElem("审题构思", new ListElem("standard", new TextArea("")));
+	$form->addElem("审题构思", new ListElem("standard", new TextArea(""), 4));
 	$form->addElem("写作提纲", new UploadCdnImage("writing_image", "pc_prize"));
 	$example = new Block("example", "");
 	$en = new Block("english", "");
@@ -354,6 +406,21 @@ function testForm() {
 	outputhtml("test", $nav->innerHtml);
 } 
 
-testForm();
+function testListElem() {
+	$form = new Form("writing");
+	$en = new Block("english", "选择题");
+	$en->addElem("重点", new TextArea("important"));
+	$en->addElem("其他", new TextArea("other"));
+
+	$ch = new Block("english", "填空题");
+	$ch->addElem("词汇", new Input(""));
+	$ch->addElem("翻译", new Input(""));
+
+	$list = new ListElem("testTmep", ["重点"=>$en, "原文"=>$ch]);
+	$form->addElem("testTemp", $list);
+	outputhtml("testTemp", $form->innerHtml);
+}
+
+testListElem();
 #testClone();
 #echo date("Ymd H:i:s", time());

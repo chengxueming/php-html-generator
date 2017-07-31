@@ -40,9 +40,13 @@ function incrPropertys($propertys, $elem) {
     $new_attr_func = function($old_attr) {return get_new_gen_attr($old_attr, 1);};
     $new_script_func = function($old_script) use ($new_attr_func) {
         return preg_replace_callback(
-            ["/[\"|']#(.*)[\"|']/", "/getElementById\([\"|'](.*)[\"|']\)/"],
+            ["/[\"|']#(.*?)[\"|']/", "/getElementById\([\"|'](.*?)[\"|']\)/"],
             function ($matches) use ($new_attr_func) {
-                 return str_replace($matches[1], $new_attr_func($matches[1]), $matches[0]);
+                 $new_attr = $new_attr_func($matches[1]);
+                 if(in_array($matches[1], ["edit-toolbar", "page", "open"])) {
+                        $new_attr = $matches[1];
+                 }
+                 return str_replace($matches[1], $new_attr, $matches[0]);
             },
             $old_script
         );
@@ -77,6 +81,21 @@ function phpToJsStrArr($value) {
     }, $value);
     $data = join('","', $value);
     return "[\"$data\"]";
+}
+
+function phpToJsMap($map, $strProperty) {
+    $data = [];
+    foreach($map as $k => $v) {
+        $v = str_replace(["'", "\""], "\'", $v->$strProperty);
+        $v = str_replace(["\n", "\r"], "", $v);
+        $data[] = "$k:'$v'";
+    }
+    $data = join(",", $data);
+    return "{ $data }";
+}
+
+function addSibling($main, $ele2, $type="after") {
+    return elem("", [], [$main, $ele2]);
 }
 
 if ( ! function_exists('safeSetArr')) {

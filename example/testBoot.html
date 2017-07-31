@@ -1,0 +1,49 @@
+<meta charset="utf-8" />
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<!-- Bootstrap and Datatables Bootstrap theme (OPTIONAL) -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type = "text/javascript" src="static/js/common.js"></script>        
+
+
+<div class="btn-group" role="group" aria-label="...">
+  <button type="button" class="btn btn-default"><span aria-hidden="true", class="glyphicon glyphicon-plus"></span></button>
+  <button type="button" class="btn btn-default"><span aria-hidden="true", class="glyphicon glyphicon-minus"></span></button>
+  <div class="input-group-btn">  
+      <select>
+          <option value="1">apple</option>
+          <option value="2">pen</option>
+          <option value="3">apple-pen</option>
+      </select>
+  </div>  
+</div>
+
+<!-- <div class="form-group">   -->
+<div class="row"><div id="Block604247" class="block alert alert-success form-inline col-md-8">&nbsp;&nbsp;&nbsp;<label>重点：</label><textarea type="text" placeholder="" id="TextArea899758" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" rows="3" value=""></textarea>&nbsp;&nbsp;&nbsp;<label>其他：</label><textarea type="text" placeholder="" id="TextArea814669" onclick="        $('#page').html($(this).val());
+        var input = $(this);
+        $( '#edit-toolbar' ).dialog(
+            {  modal: true,
+               autoOpen: false,
+               close:function() {      input.val($('#page').html());    }    
+            }); 
+        $('#edit-toolbar').dialog('open');" rows="3" value=""></textarea><script></script></div><div class="input-group col-md-4"><select id="Select425928" class="form-control" style="width: auto;"><option value="0" selected="selected">重点</option><option value="1">原文</option></select><button onclick="        var outDiv =         $($(this).parent('div').parent('div')[0]);
+        var toolBar = outDiv.children('div[type=\'tool-bar\']');
+        var title =         (function(jqNode) {
+        var selectNode = jqNode[0];
+        var index = selectNode.selectedIndex;
+        return selectNode.options[index].innerHTML;
+        })(toolBar.children('select'));
+        console.log(title);
+        console.log({ 重点:'<div id=\'Block604247\' class=\'block alert alert-success form-inline\'>&nbsp;&nbsp;&nbsp;<label>重点：</label><textarea type=\'text\' placeholder=\'\' id=\'TextArea899758\' onclick=\'        $(\'#page\').html($(this).val());        var input = $(this);        $( \'#edit-toolbar\' ).dialog(            {  modal: true,               autoOpen: false,               close:function() {      input.val($(\'#page\').html());    }                });         $(\'#edit-toolbar\').dialog(\'open\');\' rows=\'3\'></textarea>&nbsp;&nbsp;&nbsp;<label>其他：</label><textarea type=\'text\' placeholder=\'\' id=\'TextArea814669\' onclick=\'        $(\'#page\').html($(this).val());        var input = $(this);        $( \'#edit-toolbar\' ).dialog(            {  modal: true,               autoOpen: false,               close:function() {      input.val($(\'#page\').html());    }                });         $(\'#edit-toolbar\').dialog(\'open\');\' rows=\'3\'></textarea><script></script></div>',原文:'<div id=\'Form765066\' class=\'form-inline\'><div class=\'form-group\'>&nbsp;&nbsp;<label>词汇：</label><input type=\'text\' placeholder=\'\' id=\'Input899728\' onclick=\'        $(\'#page\').html($(this).val());        var input = $(this);        $( \'#edit-toolbar\' ).dialog(            {  modal: true,               autoOpen: false,               close:function() {      input.val($(\'#page\').html());    }                });         $(\'#edit-toolbar\').dialog(\'open\');\' class=\'input-medium form-control\'/></div><div class=\'form-group\'>&nbsp;&nbsp;<label>翻译：</label><input type=\'text\' placeholder=\'\' id=\'Input202580\' onclick=\'        $(\'#page\').html($(this).val());        var input = $(this);        $( \'#edit-toolbar\' ).dialog(            {  modal: true,               autoOpen: false,               close:function() {      input.val($(\'#page\').html());    }                });         $(\'#edit-toolbar\').dialog(\'open\');\' class=\'input-medium form-control\'/></div><script></script></div>' });
+        var html = { 重点:'<div id=\'Block604247\' class=\'block alert alert-success form-inline\'>&nbsp;&nbsp;&nbsp;<label>重点：</label><textarea type=\'text\' placeholder=\'\' id=\'TextArea899758\' onclick=\'        $(\'#page\').html($(this).val());        var input = $(this);        $( \'#edit-toolbar\' ).dialog(            {  modal: true,               autoOpen: false,               close:function() {      input.val($(\'#page\').html());    }                });         $(\'#edit-toolbar\').dialog(\'open\');\' rows=\'3\'></textarea>&nbsp;&nbsp;&nbsp;<label>其他：</label><textarea type=\'text\' placeholder=\'\' id=\'TextArea814669\' onclick=\'        $(\'#page\').html($(this).val());        var input = $(this);        $( \'#edit-toolbar\' ).dialog(            {  modal: true,               autoOpen: false,               close:function() {      input.val($(\'#page\').html());    }                });         $(\'#edit-toolbar\').dialog(\'open\');\' rows=\'3\'></textarea><script></script></div>',原文:'<div id=\'Form765066\' class=\'form-inline\'><div class=\'form-group\'>&nbsp;&nbsp;<label>词汇：</label><input type=\'text\' placeholder=\'\' id=\'Input899728\' onclick=\'        $(\'#page\').html($(this).val());        var input = $(this);        $( \'#edit-toolbar\' ).dialog(            {  modal: true,               autoOpen: false,               close:function() {      input.val($(\'#page\').html());    }                });         $(\'#edit-toolbar\').dialog(\'open\');\' class=\'input-medium form-control\'/></div><div class=\'form-group\'>&nbsp;&nbsp;<label>翻译：</label><input type=\'text\' placeholder=\'\' id=\'Input202580\' onclick=\'        $(\'#page\').html($(this).val());        var input = $(this);        $( \'#edit-toolbar\' ).dialog(            {  modal: true,               autoOpen: false,               close:function() {      input.val($(\'#page\').html());    }                });         $(\'#edit-toolbar\').dialog(\'open\');\' class=\'input-medium form-control\'/></div><script></script></div>' }[title];
+        $(html).attr('tilte', title);
+        delCloneNodeId(html);
+        outDiv.children('div[type=\'content\']').prepend(html);;" class="btn" type="button">添加</button><span aria-hidden="true" class="glyphicon glyphicon-plus"></span></div></div><!-- </div> -->
