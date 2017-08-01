@@ -403,7 +403,7 @@ function testForm() {
 	$nav->addElem("Part IV Writing", new Form(""));
 	$nav->addElem("Part V Writing", new Form(""));
 	$nav->addElem("Part VI Translation", getTranslation());
-	outputhtml("test", $nav->innerHtml);
+	outputhtml("testTemp", $nav->innerHtml);
 } 
 
 function testListElem() {
@@ -416,11 +416,86 @@ function testListElem() {
 	$ch->addElem("词汇", new Input(""));
 	$ch->addElem("翻译", new Input(""));
 
-	$list = new ListElem("testTmep", ["重点"=>$en, "原文"=>$ch]);
-	$form->addElem("testTemp", $list);
+	$list = new ListElem("testTmep",  $ch);
+	$form->addElem("标题", $list);
 	outputhtml("testTemp", $form->innerHtml);
 }
 
-testListElem();
-#testClone();
-#echo date("Ymd H:i:s", time());
+
+function testFormValue() {
+	$data = [
+		"staff"=>231241243,
+		"pip"=>"dsfasfsdf",
+		"english"=>
+		[
+		"important" =>"abcdefg",
+		"other" =>"ag",
+		],
+		"god"=>
+		[
+		"important" =>"ag",
+		"other" =>"dsfadfasd",
+		],
+	];
+	$form = new Form("writing");
+	$form->addElem("重点", new TextArea("staff"));
+	$form->addElem("其他", new Input("pip"));
+	$en = new Block("english", "选择题");
+	$en->addElem("重点", new TextArea("important"));
+	$en->addElem("其他", new TextArea("other"));
+	$form->addElem("超重点", $en);
+	$en = new Block("god", "选择题");
+	$en->addElem("重点", new TextArea("important"));
+	$en->addElem("其他", new TextArea("other"));
+	$form->addElem("超重点", $en);
+	$form->value = $data;
+	return $form;
+}
+
+function testTextArea() {
+	$textArea = new TextArea("agsdaf");
+	$textArea->value = "asgbsafsaf";
+	echo $textArea->innerHtml["id"]."\n";
+	echo $textArea->valueScript;
+	outputhtml("testTemp", $textArea->innerHtml);
+}
+
+function testBlockNew() {
+	$v = [
+	"important"=>2132,
+	"pip"=>"sdfasfs",
+	];
+	$en = new Block("english", "选择题");
+	$en->addElem("重点", new TextArea("important"));
+	$en->addElem("其他", new TextArea("pip"));
+	$en->value = $v;
+	return $en;
+}
+
+function testNavBar() {
+	$nav = new Nav("nav");
+	$nav->addElem("Part I Writing", testFormValue());
+	$nav->addElem("Part III Writing", testBlockNew());
+	outputhtml("testTemp", $nav->innerHtml);
+}
+
+function testListElemValue() {
+	$l = [
+		"example"=>"asfsdaf",
+		"comment"=>[
+		"fsdafdfsa",
+		"fsdafdfsa",
+		"fsdafdfsa",
+		"fsdafdfsa",
+		"fsdafdfsa",
+		]
+	];
+	$example = new Block("example", "", "alert-info");
+	$example->addElem("正文", new TextArea("example", "With the improvement of living standards, taking a vacation is playing..."));
+	$example->addElem("精彩点评", new ListElem("comment", new TextArea("example")));
+	$example->value = $l;
+	echo $example->valueScript;
+	outputhtml("testTemp", $example->innerHtml);	
+}
+
+testListElemValue();

@@ -62,7 +62,7 @@
 	        $.messager.alert('信息提示', '文件类型不合法！');
 	    }
 	};
-	global.jqFirstChild = function(ele) {
-		return $($(ele).children()[0]);
+	global.jqChild = function(ele, index) {
+		return $($(ele).children()[index]);
 	}
 })(window)

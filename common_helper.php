@@ -83,15 +83,34 @@ function phpToJsStrArr($value) {
     return "[\"$data\"]";
 }
 
-function phpToJsMap($map, $strProperty) {
+function phpToJsMap($map, $strProperty, $func = false) {
     $data = [];
     foreach($map as $k => $v) {
-        $v = str_replace(["'", "\""], "\'", $v->$strProperty);
-        $v = str_replace(["\n", "\r"], "", $v);
-        $data[] = "$k:'$v'";
+        if(!$func) {
+            $v = str_replace(["'", "\""], "\'", $v->$strProperty);
+            $v = str_replace(["\n", "\r"], "", $v);
+            $ele = "$k:'$v'";
+        }else{
+            $v = str_replace(["\""], "'", $v->$strProperty);
+            $ele = "$k:$v";
+        }
+        $data[] = $ele;
     }
     $data = join(",", $data);
     return "{ $data }";
+}
+
+function select_func($node) {
+        return <<<JS
+        (function(jqNode) {
+        var selectNode = jqNode[0];
+        if(typeof selectNode == 'undefined') {
+            return "";
+        }
+        var index = selectNode.selectedIndex;
+        return selectNode.options[index].innerHTML;
+        })($node)
+JS;
 }
 
 function addSibling($main, $ele2, $type="after") {
@@ -106,6 +125,12 @@ if ( ! function_exists('safeSetArr')) {
             }
         }
     }
+}
+
+function strInstr($str) {
+    $str = str_replace("\\", "\\\\", $str);
+    $str = preg_replace("/[^\]'/", "\\'", $str);
+    return $str;
 }
 
 function titleSearch($title, $searchKey, $ajaxParam, $attrs = []) {
