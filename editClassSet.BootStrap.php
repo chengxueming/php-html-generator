@@ -1,6 +1,6 @@
 <?php
 abstract class BaseEdit {
-    var $innerHtml = null;
+    public $innerHtml = null;
     private $valueScript = null;
     var $valueScriptFunc = null;
     var $postName = null;
@@ -44,14 +44,7 @@ abstract class BaseInput extends BaseEdit {
         parent::__construct($name);
         $attr = ["type"=>$type, "placeholder"=>$placeholder];
         $toolBarJs =<<<JS
-        $('#page').html($(this).val());
-        var input = $(this);
-        $( '#edit-toolbar' ).dialog(
-            {  modal: true,
-               autoOpen: false,
-               close:function() {      input.val($('#page').html());    }    
-            }); 
-        $('#edit-toolbar').dialog('open');
+        openEdit(this);
 JS;
         $this->valueElem = elem($tagName, $attr);
         $this->valueElem["id"] = $this->id;
@@ -70,7 +63,7 @@ JS;
 
 class Input extends BaseInput {
     public function __construct($name, $type="text", $placeholder = "", $style = "middle") {
-        parent::__construct($name, $type, $placeholder, "input");
+        parent::__construct($name, $type, $placeholder, "input", false);
         if($type == "time") {
             $this->valueElem["onfocus"] = "WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd HH:mm:ss'})";
             $this->valueElem->addClass("Wdate");
@@ -83,8 +76,8 @@ class Input extends BaseInput {
 }
 
 class TextArea extends BaseInput {
-    public function __construct($name, $placeholder = "", $rows = 3) {
-        parent::__construct($name, "text", $placeholder, "textarea");
+    public function __construct($name, $placeholder = "", $withToolBar = true, $rows = 3) {
+        parent::__construct($name, "text", $placeholder, "textarea", $withToolBar);
         $this->valueElem["rows"] = $rows;
         $this->valueElem->addClass("form-control");
     }
@@ -174,7 +167,7 @@ class ListElem extends BaseEdit {
     var $ele_class = "";
     var $tool_bar = null;
 
-    public function __construct($name, $subElemMap, $column = 3) {
+    public function __construct($name, $subElemMap, $column = 3, $title = "") {
         parent::__construct($name);
         $this->innerHtml = elem("div", ["id"=>$this->id, "style"=>"display:inline;"]);
         $this->head = elem("div", ["type"=>"tool-bar", "class"=>["input-group"]]);
@@ -183,11 +176,11 @@ class ListElem extends BaseEdit {
         $this->columns = $column;
         //列表div的样式
         $class = [];
-        if(is_array($subElemMap) || $subElemMap instanceof Div) {
+        if(is_array($subElemMap) || $subElemMap instanceof Div || get_class($subElemMap) == "ListElem") {
             $class = [];
             //如果是map 或 div后面有+-toolbar
             $this->out_class = "row";
-            $this->ele_class = "col-md-8";
+            $this->ele_class = "col-md-11";
         }else {
             $class[] = "row";
             // input textarea 等没有 但
@@ -198,20 +191,27 @@ class ListElem extends BaseEdit {
             $this->subElem = $subElemMap;
             $this->subElemMap = ["eye"=>$subElemMap];
         }
+        $this->title = $title;
         $this->setHead();
         $this->body = elem("div", ["class"=>$class, "type"=>"content"]);
         $this->innerHtml->addElement($this->body);
         $this->value = [];
     }
 
-    private function addJsFunc($toolBarJs, $insertJs) {
+    private function addJsFunc($toolBarJs, $insertJs, $outDiv) {
         $selectFunc = 'select_func';
-        $jsHtmlMap = phpToJsMap($this->subElemMap, "innerHtml");
         return<<<JS
         var toolBar = $toolBarJs;
-        var title = {$selectFunc('toolBar.children(\'select\')')} || 'eye';
-        var html = {$jsHtmlMap}[title];
-        $(html).attr('tilte', title);
+        var title = {$selectFunc('toolBar.children(\'select\')')};
+        title = title || 'eye';
+        console.log("out div is:", $({$outDiv})[0]);
+        var mapDiv = $({$outDiv}).children('div[type=\'tool-bar\']').children('div[type=\'mapDiv\']');
+        html = $(mapDiv.children('div[title=\''+title+'\']').html());
+        console.log(html);
+        if($(html).length < 2) {
+            console.log("add title");
+            html = $(html).attr('title', title)[0];
+        }
         delCloneNodeId(html);
         $insertJs;
 JS;
@@ -225,10 +225,15 @@ JS;
         var data = [];
         {$list_content('jqNode')}.children("div").each(function(index, ele) {
             var title = $(ele).attr("title");
-            console.log(ele);
-            console.log("function is:", {$funcs});
-            console.log("tilte i get is:", title);
-            var value = ({$funcs}[title])(jqChild(ele, 1));
+            console.log(title);
+            var node = jqChild(ele, 1);
+            console.log("node before judge is:", node);
+            console.log("node first is:", jqChild(ele, 0));
+            if(jqChild(ele, 0)[0].tagName != 'LABEL') {
+                node = jqChild(ele, 0);
+            }
+            var value = ({$funcs}[title])(node);
+            console.log("node added to list is:", node);
             data.push(value);
         });
         return data;
@@ -241,20 +246,27 @@ JS;
         $outDiv =<<<JS
         $($(this).parent("div").parent("div")[0])
 JS;
-        $toolBarHtml = $this->tool_bar_func()->__toString();
         $insertJs =<<<JS
-        var toolBar = $("$toolBarHtml");
-        // html = toolBar.insertBefore($(html));
-        // console.log(html);
-        var div = $('<div class=\'{$this->out_class}\'></div>').append($(html));
+        html = $(html).addClass('{$this->ele_class}');
+        var div = $('<div class=\'{$this->out_class}\'></div>');
+        div.attr("title", title);
+        div.append($(html));
+        var toolBar = {$outDiv}.children('div[type=\'tool-bar\']').children("div[type=\'hide_tool_bar\']");
+        if(typeof toolBar[0] != "undefined") {
+            toolBar = toolBar[0].cloneNode(true);
+            toolBar = $(toolBar).removeAttr("style");
+            div.append(toolBar);
+        }
+        console.log(div[0]);
         {$list_content($outDiv)}.append(div);
 JS;
-        $addJs = $this->addJsFunc("{$outDiv}.children('div[type=\'tool-bar\']')", $insertJs);
+        $addJs = $this->addJsFunc("{$outDiv}.children('div[type=\'tool-bar\']')", $insertJs, $outDiv);
         $addBtnAttr = ["onclick"=>"$addJs;", "class"=>["btn"], "type"=>"button"];
         $select_html = $this->get_select_html();
         $addButton = elem("button", $addBtnAttr, "添加{$this->title}");
         $addButton = addSibling($select_html, $addButton);
         $delButton = elem("");
+        $jsHtmlMap = phpToDivMap($this->subElemMap, "innerHtml");
         if(!is_null($this->subElem)) {
             $delJs =<<<JS
             var content_div = {$list_content($outDiv)};
@@ -264,7 +276,12 @@ JS;
             $delBtnAttr = ["onclick"=>"$delJs;", "class"=>["btn"], "type"=>"button"];
             $delButton = elem("button", $delBtnAttr, "删除{$this->title}");
         }
-        return [$addButton, elem("", [], "&nbsp;"), $delButton];
+        $toolBar = $this->tool_bar_func();
+        if(count($toolBar->content) > 1) {
+            $toolBar["type"] = "hide_tool_bar";
+            $toolBar["style"] = "display:none;";
+        }
+        return [$addButton, elem("", [], "&nbsp;"), $delButton, $toolBar, $jsHtmlMap];
     }
 
     protected function get_select_html() {
@@ -278,7 +295,7 @@ JS;
     }
 
     protected function tool_bar_func() {
-        if(!is_null($this->subElem)) {
+        if(!is_null($this->subElem) && get_class($this->subElem) != "Block") {
             return elem("");
         }
         $select_html = $this->get_select_html();
@@ -289,19 +306,21 @@ JS;
         $button_attr = ["type"=>"button", "class"=>["btn", "btn-default"]];
         $toolBarJs = "$(this).parent('div')";
         $listElemJs = "$toolBarJs.parent('div')";
+        $outDiv = "$toolBarJs.parent('div').parent('div')";
         $insertJs = <<<JS
             var div = $('<div class=\'{$this->out_class}\'></div>').append($(html).addClass('{$this->ele_class}').prop('outerHTML'));
             var div = div.append($toolBarJs.prop('outerHTML'));
+            div.attr("title", title);
             div.insertAfter($listElemJs);
 JS;
-        $add_attr = array_merge($button_attr, ["onclick"=>$this->addJsFunc($toolBarJs,  $insertJs)]);
+        $add_attr = array_merge($button_attr, ["onclick"=>$this->addJsFunc($toolBarJs,  $insertJs, "{$outDiv}.parent('div')")]);
         $delJs = <<<JS
         $listElemJs.remove();
 JS;
         $del_attr = array_merge($button_attr, ["onclick"=>$delJs]);
         $add_button = elem("button", $add_attr, [$span]);
         $del_button = elem("button", $del_attr, [$del_span]);
-        return elem("div", ["class"=>["input-group", "col-md-4"]], [$select_html, $add_button, $del_button]);
+        return elem("div", ["class"=>["input-group", "col-md-1"]], [$select_html, $add_button, $del_button]);
     }
 
     public function setTitle($title) {
@@ -321,12 +340,10 @@ JS;
     }
 
     public function setValue($valueList) {
-        print_r($valueList);
         $this->valueList = $valueList;
         $childElemList = [];
         if(empty($valueList) && is_null($this->subElem)) {
             $valueList = [];
-            $valueList[] = ["", array_keys($this->subElemMap)[0]];
         }
         foreach($valueList as $value) {
             //修改html 内容
@@ -386,6 +403,17 @@ abstract class Div extends BaseEdit {
         return $html;
     }
 
+    protected function getContentHtml() {
+        return $this->innerHtml;
+    }
+
+    public function addElemBr() {
+        $this->tail = "<br>";
+        $arguments = func_get_args();
+        call_user_func_array(array($this, "addElem"), $arguments);
+        $this->tail = "";
+    }
+
     public function addElem($title, $elem, $condation = []) {
         $this->valueElem[$this->postName][$elem->postName] = $elem;
         if(isset($this->valueMap[$this->postName][$elem->postName])) {
@@ -396,15 +424,15 @@ abstract class Div extends BaseEdit {
         $scripts = "[".join(",", $this->scriptList)."]";
         $postNames = "['".join("','", $this->postNameList)."']";
         $html = $this->get_html($elem, $title);
-        array_insert($this->innerHtml->content, $html, -1);
+        array_insert($this->getContentHtml()->content, $html, -1);
         $noScriptTags = phpToJsStrArr(["LABEL", "BR", "SCRIPT", "BUTTON"]);
         $this->valueScript =<<<JS
         var data = {};
         var scripts = $scripts;
         var postNames = $postNames;
         var eleDir = [].slice.call({$this->eachElemJs}).filter(function(ele, index){return !in_array($noScriptTags, ele.tagName);});
-        console.log(scripts);
         eleDir.forEach(function(ele, index) {
+            console.log("scripts is:", scripts, "index is:", index, "ele is:", ele);
             var value = (scripts[index])($(ele));
             data[postNames[index]] = value;
         });
@@ -413,6 +441,7 @@ JS;
 
         $this->titleMap[$title] = $elem->postName;
         if(!empty($condation)) {
+            print_r($condation);
             foreach($condation as $titleSelect => $valueSelect) {
                 //修改select节点的onchange用于动态加载 1.获取自身的值 2.根据值判断是否toggle
                 $postName = $this->titleMap[$titleSelect];
@@ -452,7 +481,7 @@ JS;
                 //初始化标签节点中的select 页面加载时的condation情况
                 $this->bodyScripts = $selectFunc($this->bodyScripts, $nodeIndexFunc($selectIndex), "$(\"#{$this->id}\")");
                 //修改内置script标签 1.获取select的值 2.根据值判断是否toggle
-                $this->innerHtml->content[count($this->innerHtml->content) - 1] = elem("script", ["type"=>"text/javascript"], $this->bodyScripts);
+                $this->getContentHtml()->content[count($this->getContentHtml()->content) - 1] = elem("script", ["type"=>"text/javascript"], $this->bodyScripts);
             }
         }
     }
@@ -473,12 +502,35 @@ JS;
             }
         }
     }
+
+    public function submit($saveMethod, $listMethodName, $args) {
+        $c="pc_prize";
+        $jump = ci_link($c, $listMethodName, [], "&");
+        $successJs = <<<JS
+        alert(data.errmsg);
+        if(data.errno == 0) {
+            window.location = "$jump";
+        }
+JS;
+        $args = array_merge($args, ["c"=>$c, "m"=>$saveMethod]);
+        $click_js = ajax2($this->valueScript, ["type"=>"POST"], $successJs, $args, "&");
+        $script =<<<JS
+        $("#submitbutton")[0].addEventListener("click", function(){ $click_js });
+JS;
+        $this->bodyScripts[] = $script;
+        $this->innerHtml->content[count($this->innerHtml->content) - 1] = elem("script", ["type"=>"text/javascript"], join(";", $this->bodyScripts));
+    }
+
+    public function addSubmitBtn($text="保存") {
+        $btn = addTitle(elem("button", ["id"=>"submitbutton", "type"=>"button", "class"=>["btn", "btn-primary"]], $text), "");
+        array_insert($this->getContentHtml()->content, $btn, -1);        
+    }
 }
 
 class Block extends Div {
     var $title = null;
 
-    public function __construct($name, $title, $color = "alert-success", $value = []) {
+    public function __construct($name, $title = "", $color = "alert-info", $value = []) {
         parent::__construct($name, "div");
         $this->setTitle($title);
         $this->innerHtml["class"] = ["block", "alert", $color, "form-inline"];
@@ -539,13 +591,6 @@ JS;
         $html = elem("", [], [elem("div", ["class"=>["form-group"], "type"=>"single"], [elem("", [], $this->head), elem("label", [], "{$title}："), $html]), $this->tail]);
         return $html;
     }
-
-    public function addElemBr() {
-        $this->tail = "<br>";
-        $arguments = func_get_args();
-        call_user_func_array(array($this, "addElem"), $arguments);
-        $this->tail = "";
-    }
 }
 
 class Nav extends Div {
@@ -559,7 +604,6 @@ class Nav extends Div {
         $this->tab_content = elem("div", ["class"=>["tab-content"]]);
         $this->innerHtml->addElement($this->nav);
         $this->innerHtml->addElement($this->tab_content);
-        $this->innerHtml = $this->tab_content;
         $this->eachElemJs =<<<JS
         (function(jqNode) {
             var cart = [].slice.call(jqNode.children("div[class=tab-content]").children()).reduce(function(cart, ele){
@@ -567,9 +611,18 @@ class Nav extends Div {
                 return cart;
             }, []);
             console.log(cart);
-            return cart.reverse();
+            cart.unshift(cart.pop());
+            return cart;
         })(jqNode)
 JS;
+    }
+
+    protected function getContentHtml() {
+        return $this->tab_content;
+    }
+
+    public function getInnerHtml() {
+        return $this->body;
     }
 
     protected function addTitle($html, $title) {

@@ -64,5 +64,16 @@
 	};
 	global.jqChild = function(ele, index) {
 		return $($(ele).children()[index]);
+	};
+	global.openEdit = function(node) {
+		$('#page').html($(node).val());
+		var input = $(node);
+		$( '#edit-toolbar' ).dialog(
+		    {  modal: true,
+		       autoOpen: false,
+		       width: "500px",
+		       close:function() {      input.val($('#page').html());    }    
+		    }); 
+		$('#edit-toolbar').dialog('open');
 	}
 })(window)

@@ -1,49 +1,159 @@
-<meta charset="utf-8" />
-<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<!-- Bootstrap and Datatables Bootstrap theme (OPTIONAL) -->
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script type = "text/javascript" src="static/js/common.js"></script>        
-
-
-<div class="btn-group" role="group" aria-label="...">
-  <button type="button" class="btn btn-default"><span aria-hidden="true", class="glyphicon glyphicon-plus"></span></button>
-  <button type="button" class="btn btn-default"><span aria-hidden="true", class="glyphicon glyphicon-minus"></span></button>
-  <div class="input-group-btn">  
-      <select>
-          <option value="1">apple</option>
-          <option value="2">pen</option>
-          <option value="3">apple-pen</option>
+<style>
+#zoom-button {
+  width: 55px;
+}
+#fontname-button,
+#fontsize-button {
+  width: 45px;
+}
+#forecolor-button {
+  width: 50px;
+}
+#hilitecolor-button {
+  width: 70px;
+}
+#bold {
+  font-weight: bold;
+}
+#italic {
+  font-style: italic;
+}
+#underline {
+  text-decoration: underline;
+}
+#edit-toolbar .toolbar {
+  font-size: .75em;
+}
+#page {
+  width: 440px;
+  left: 50%;
+  position: relative;
+  margin-left: -226px;
+  height: 450px;
+  border: 1px solid #888;
+  box-shadow: 7px 7px 3px #ccc;
+  font-size: 11px;
+  font-family: "Lucida Grande";
+  zoom: 100%;
+  padding: 5px;
+  white-space: pre-line;
+  overflow: scroll;
+}
+#edit-toolbar .wrap {
+  width: 588px;
+}
+#edit-toolbar .form-group {
+width: 100%;
+}
+</style>
+<div class="wrap" id="edit-toolbar" title="test">
+  <div class="toolbar">
+      <button id="print">Print</button>
+      <button id="undo">Undo</button>
+      <button id="redo">Redo</button>
+      <select id="zoom">
+        <option selected disabled>Zoom</option>
+        <option>50%</option>
+        <option>75%</option>
+        <option>90%</option>
+        <option>100%</option>
+        <option>125%</option>
+        <option>150%</option>
+        <option>200%</option>
       </select>
-  </div>  
-</div>
+      <select id="fontname">
+        <option selected disabled>Font</option>
+        <option>Arial</option>
+        <option>Comic Sans MS</option>
+        <option>Courier New</option>
+        <option>Georgia</option>
+        <option>Impact</option>
+        <option>Lucida Grande</option>
+        <option>Times New Roman</option>
+        <option>Verdana</option>
+      </select>
+      <select id="fontsize">
+        <option selected disabled>Size</option>
+        <option value="1">8px</option>
+        <option value="2">9px</option>
+        <option value="3">10px</option>
+        <option value="4">11px</option>
+        <option value="5">12px</option>
+        <option value="6">14px</option>
+        <option value="7">18px</option>
+        <option value="8">24px</option>
+        <option value="9">30px</option>
+        <option value="10">36px</option>
+      </select>
+      <select id="hilitecolor" title="Background color">
+        <option selected disabled>Highlight</option>
+        <option value="white">None</option>
+        <option value="red">Red</option>
+        <option value="yellow">Yellow</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+        <option value="grey">Grey</option>
+        <option value="purple">Purple</option>
+        <option value="orange">Orange</option>
+      </select>
+      <select id="forecolor" title="Color">
+        <option selected disabled>Color</option>
+        <option value="black">Black</option>
+        <option value="white">White</option>
+        <option value="red">Red</option>
+        <option value="yellow">Yellow</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+        <option value="#ccc">Grey</option>
+        <option value="purple">Purple</option>
+        <option value="orange">Orange</option>
+      </select>
+      <button id="bold">B</button>
+      <button id="italic">I</button>
+      <button id="underline">U</button>
+ 
+  </div>
+  <pre id="page" contenteditable="true">
 
-<!-- <div class="form-group">   -->
-<div class="row"><div id="Block604247" class="block alert alert-success form-inline col-md-8">&nbsp;&nbsp;&nbsp;<label>重点：</label><textarea type="text" placeholder="" id="TextArea899758" onclick="        $('#page').html($(this).val());
-        var input = $(this);
-        $( '#edit-toolbar' ).dialog(
-            {  modal: true,
-               autoOpen: false,
-               close:function() {      input.val($('#page').html());    }    
-            }); 
-        $('#edit-toolbar').dialog('open');" rows="3" value=""></textarea>&nbsp;&nbsp;&nbsp;<label>其他：</label><textarea type="text" placeholder="" id="TextArea814669" onclick="        $('#page').html($(this).val());
-        var input = $(this);
-        $( '#edit-toolbar' ).dialog(
-            {  modal: true,
-               autoOpen: false,
-               close:function() {      input.val($('#page').html());    }    
-            }); 
-        $('#edit-toolbar').dialog('open');" rows="3" value=""></textarea><script></script></div><div class="input-group col-md-4"><select id="Select425928" class="form-control" style="width: auto;"><option value="0" selected="selected">重点</option><option value="1">原文</option></select><button onclick="        var outDiv =         $($(this).parent('div').parent('div')[0]);
-        var toolBar = outDiv.children('div[type=\'tool-bar\']');
-        var title =         (function(jqNode) {
-        var selectNode = jqNode[0];
-        var index = selectNode.selectedIndex;
-        return selectNode.options[index].innerHTML;
-        })(toolBar.children('select'));
-        console.log(title);
-        console.log({ 重点:'<div id=\'Block604247\' class=\'block alert alert-success form-inline\'>&nbsp;&nbsp;&nbsp;<label>重点：</label><textarea type=\'text\' placeholder=\'\' id=\'TextArea899758\' onclick=\'        $(\'#page\').html($(this).val());        var input = $(this);        $( \'#edit-toolbar\' ).dialog(            {  modal: true,               autoOpen: false,               close:function() {      input.val($(\'#page\').html());    }                });         $(\'#edit-toolbar\').dialog(\'open\');\' rows=\'3\'></textarea>&nbsp;&nbsp;&nbsp;<label>其他：</label><textarea type=\'text\' placeholder=\'\' id=\'TextArea814669\' onclick=\'        $(\'#page\').html($(this).val());        var input = $(this);        $( \'#edit-toolbar\' ).dialog(            {  modal: true,               autoOpen: false,               close:function() {      input.val($(\'#page\').html());    }                });         $(\'#edit-toolbar\').dialog(\'open\');\' rows=\'3\'></textarea><script></script></div>',原文:'<div id=\'Form765066\' class=\'form-inline\'><div class=\'form-group\'>&nbsp;&nbsp;<label>词汇：</label><input type=\'text\' placeholder=\'\' id=\'Input899728\' onclick=\'        $(\'#page\').html($(this).val());        var input = $(this);        $( \'#edit-toolbar\' ).dialog(            {  modal: true,               autoOpen: false,               close:function() {      input.val($(\'#page\').html());    }                });         $(\'#edit-toolbar\').dialog(\'open\');\' class=\'input-medium form-control\'/></div><div class=\'form-group\'>&nbsp;&nbsp;<label>翻译：</label><input type=\'text\' placeholder=\'\' id=\'Input202580\' onclick=\'        $(\'#page\').html($(this).val());        var input = $(this);        $( \'#edit-toolbar\' ).dialog(            {  modal: true,               autoOpen: false,               close:function() {      input.val($(\'#page\').html());    }                });         $(\'#edit-toolbar\').dialog(\'open\');\' class=\'input-medium form-control\'/></div><script></script></div>' });
-        var html = { 重点:'<div id=\'Block604247\' class=\'block alert alert-success form-inline\'>&nbsp;&nbsp;&nbsp;<label>重点：</label><textarea type=\'text\' placeholder=\'\' id=\'TextArea899758\' onclick=\'        $(\'#page\').html($(this).val());        var input = $(this);        $( \'#edit-toolbar\' ).dialog(            {  modal: true,               autoOpen: false,               close:function() {      input.val($(\'#page\').html());    }                });         $(\'#edit-toolbar\').dialog(\'open\');\' rows=\'3\'></textarea>&nbsp;&nbsp;&nbsp;<label>其他：</label><textarea type=\'text\' placeholder=\'\' id=\'TextArea814669\' onclick=\'        $(\'#page\').html($(this).val());        var input = $(this);        $( \'#edit-toolbar\' ).dialog(            {  modal: true,               autoOpen: false,               close:function() {      input.val($(\'#page\').html());    }                });         $(\'#edit-toolbar\').dialog(\'open\');\' rows=\'3\'></textarea><script></script></div>',原文:'<div id=\'Form765066\' class=\'form-inline\'><div class=\'form-group\'>&nbsp;&nbsp;<label>词汇：</label><input type=\'text\' placeholder=\'\' id=\'Input899728\' onclick=\'        $(\'#page\').html($(this).val());        var input = $(this);        $( \'#edit-toolbar\' ).dialog(            {  modal: true,               autoOpen: false,               close:function() {      input.val($(\'#page\').html());    }                });         $(\'#edit-toolbar\').dialog(\'open\');\' class=\'input-medium form-control\'/></div><div class=\'form-group\'>&nbsp;&nbsp;<label>翻译：</label><input type=\'text\' placeholder=\'\' id=\'Input202580\' onclick=\'        $(\'#page\').html($(this).val());        var input = $(this);        $( \'#edit-toolbar\' ).dialog(            {  modal: true,               autoOpen: false,               close:function() {      input.val($(\'#page\').html());    }                });         $(\'#edit-toolbar\').dialog(\'open\');\' class=\'input-medium form-control\'/></div><script></script></div>' }[title];
-        $(html).attr('tilte', title);
-        delCloneNodeId(html);
-        outDiv.children('div[type=\'content\']').prepend(html);;" class="btn" type="button">添加</button><span aria-hidden="true" class="glyphicon glyphicon-plus"></span></div></div><!-- </div> -->
+  </pre>
+</div>
+ <script>
+$( function() {
+  var page = $( "#page" );
+  var basicControls = [ "#print", "#bold", "#underline", "#italic", "#undo", "#redo" ];
+  var valueControls = [ "#fontsize", "#forecolor", "#hilitecolor", "#backcolor", "fontname" ];
+  page.resizable();
+
+  $( "#print" ).button({
+    "icon": "ui-icon-print",
+    "showLabel": false
+  });
+  $( "#redo" ).button({
+    "icon": "ui-icon-arrowreturnthick-1-e",
+    "showLabel": false
+  });
+  $( "#undo" ).button({
+    "icon": "ui-icon-arrowreturnthick-1-w",
+    "showLabel": false
+  });
+
+  $( ".toolbar" ).controlgroup();
+  $( "#zoom" ).on( "selectmenuchange", function() {
+    page.css({ "zoom": $( this ).val() });
+  })
+  $( function() {
+    $( "#edit-toolbar" ).dialog({
+      modal: true,
+      autoOpen: false,
+    });
+  } );
+  $( basicControls.concat( valueControls ).join( ", " ) ).on( "click change selectmenuchange",
+    function() {
+      document.execCommand(
+        this.id,
+        false,
+        $( this ).val()
+      );
+    } );
+} );
+</script>

@@ -87,7 +87,7 @@ function phpToJsMap($map, $strProperty, $func = false) {
     $data = [];
     foreach($map as $k => $v) {
         if(!$func) {
-            $v = str_replace(["'", "\""], "\'", $v->$strProperty);
+            $v = str_replace(["'", "\""], ["\'", "\\\""], $v->$strProperty);
             $v = str_replace(["\n", "\r"], "", $v);
             $ele = "$k:'$v'";
         }else{
@@ -98,6 +98,16 @@ function phpToJsMap($map, $strProperty, $func = false) {
     }
     $data = join(",", $data);
     return "{ $data }";
+}
+
+function phpToDivMap($map, $strProperty) {
+    $div = elem("div", ["type"=>"mapDiv", "style"=>"display:none;"]);
+    $data = [];
+    foreach($map as $k => $v) {
+        $data[] = elem("div", ["title"=>$k], $v->$strProperty);
+    }
+    $div->content = $data;
+    return $div;
 }
 
 function select_func($node) {
@@ -155,6 +165,20 @@ function arrayRemove(&$arr, $key) {
     return $param;
 }
 
+if ( ! function_exists('toJsMapInner')) {
+    function toJsMapInner($args) {
+        $param = "";
+        foreach($args as $k => $v) {
+            if(is_array($v)) {
+                $param .= "$k:${v[0]}, ";
+            }else {
+                $param .= "$k:'$v', ";
+            }
+        }
+        return $param;
+    }
+}
+
 function ajax($args, $successJs = "", $baseUrlParam, $break="&amp;") {
     $c = arrayRemove($baseUrlParam, "c");
     $m = arrayRemove($baseUrlParam, "m");
@@ -162,20 +186,6 @@ function ajax($args, $successJs = "", $baseUrlParam, $break="&amp;") {
     $ajaxArgs = isset($args["ajax"])?$args["ajax"]:[];
     unset($args["ajax"]);
     safeSetArr($ajaxArgs, ["type"=>"GET", "async"=>["true"], "dataType"=>"json"]);
-    if ( ! function_exists('toJsMapInner')) {
-        function toJsMapInner($args) {
-            $param = "";
-            foreach($args as $k => $v) {
-                if(is_array($v)) {
-                    $param .= "$k:${v[0]}, ";
-                }else {
-                    $param .= "$k:'$v', ";
-                }
-            }
-            return $param;
-        }
-    }
-
     $ajaxParam = toJsMapInner($ajaxArgs);
     $urlParam = toJsMapInner($args);
 
@@ -186,6 +196,25 @@ function ajax($args, $successJs = "", $baseUrlParam, $break="&amp;") {
             data:{
             $urlParam
             },
+            success:function(data,textStatus,jqXHR){
+                $successJs
+            },
+           });
+EOF;
+    return $_ajax;
+}
+
+function ajax2($argValue, $ajaxParam, $successJs = "", $baseUrlParam, $break="&amp;") {
+    $c = arrayRemove($baseUrlParam, "c");
+    $m = arrayRemove($baseUrlParam, "m");
+    $baseurl = ci_link($c, $m,  $baseUrlParam, $break);
+    safeSetArr($ajaxParam, ["type"=>"GET", "async"=>["true"], "dataType"=>"json"]);
+    $ajaxParam = toJsMapInner($ajaxParam);
+    $_ajax =<<<EOF
+    $.ajax({
+            url:'$baseurl',
+            $ajaxParam
+            data:$argValue,
             success:function(data,textStatus,jqXHR){
                 $successJs
             },
