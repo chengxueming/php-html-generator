@@ -1,0 +1,196 @@
+        <meta charset="utf-8" />
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <!-- Bootstrap and Datatables Bootstrap theme (OPTIONAL) -->
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <script type = "text/javascript" src="static/js/common.js"></script>
+        <style type="text/css" src="common.css"></style>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>金山词霸试题管理平台</title>
+    <!-- <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"> -->
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css">
+    <script src="lib/bootstrap/js/bootstrap.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="stylesheets/theme.css">
+    <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.css">
+
+    <script src="lib/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="static/js/common.js" type="text/javascript"></script>
+
+<!--     <style type="text/css">
+        #line-chart {
+            height:300px;
+            width:800px;
+            margin: 0px auto;
+            margin-top: 1em;
+        }
+        .brand { font-family: georgia, serif; }
+        .brand .first {
+            color: #ccc;
+            font-style: italic;
+        }
+        .brand .second {
+            color: #fff;
+            font-weight: bold;
+        }
+    </style> -->
+    
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="../assets/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
+  </head>
+
+  <!--[if lt IE 7 ]> <body class="ie ie6"> <![endif]-->
+  <!--[if IE 7 ]> <body class="ie ie7 "> <![endif]-->
+  <!--[if IE 8 ]> <body class="ie ie8 "> <![endif]-->
+  <!--[if IE 9 ]> <body class="ie ie9 "> <![endif]-->
+  <!--[if (gt IE 9)|!(IE)]><!--> 
+  <body class=""> 
+  <!--<![endif]-->
+    
+<div class="content">
+    <div class="header"><h1 class="page-title">试题管理</h1></div>
+    <ul class="breadcrumb">
+        <li><a href="index.php?c=index&m=home">Home</a> <span class="divider">/</span></li>
+        <li><a href="index.php?c=index&m=trade_list">Trade</a> <span class="divider">/</span></li>
+        <li class="active">Detail</li>
+    </ul>
+    <div class="container-fluid">
+        <div class="row-fluid">
+
+<div class="btn-toolbar">
+    <button href="#refund_modal" data-toggle="modal" class="btn"><i class="icon-eye-open"></i>&nbsp;预览</button>
+    <a href="index.php?c=goods&uid=<?php echo $trade_info['uid']; ?>" class="btn btn-primary"><i class="icon-file"></i>&nbsp;生成试卷</a>
+    <div class="btn-group"></div>
+</div>
+<div class="well">
+    <ul class="nav nav-tabs">
+        <li><a href="#tab_writing" data-toggle="tab">写作题</a></li>
+        <li class="active"><a href="#tab_listening" data-toggle="tab">听力题</a></li>
+        <li><a href="#profile" data-toggle="tab">阅读题</a></li>
+        <li><a href="#profile" data-toggle="tab">翻译题</a></li>
+    </ul>
+
+    <div id="myTabContent" class="tab-content">
+        <!-- 写作题  -->
+        <div class="tab-pane fade" id="tab_writing">
+            <form id="part_writing" class="form-inline">
+                <div class="form-group">  <!--写作题头部-->
+                    <label>Part头：</label><input id="writing_head" type="text" class="input-xxlarge" placeholder="Part I Writing (30 minutes)">
+                    <label>Part头：</label><input id="writing_head" type="text" class="input-xxlarge" placeholder="Part I Writing (30 minutes)">
+                </div>
+                <div class="form-group">  <!--写作题头部-->
+                    <label>Part头：</label><input id="writing_head" type="text" class="input-xxlarge" placeholder="Part I Writing (30 minutes)">
+                </div><br>
+                <div class="form-group"> <!--写作题说明-->
+                    <label>说 明：&nbsp;&nbsp; </label><textarea id="writing_direction" class="form-control input-xxlarge" rows="6" placeholder="For this part, you are allowed 30 minutes to write a short essay on the following question..."></textarea>
+                </div><br>
+                <div class="form-group"> <!--写作题图片-->
+                    <label>图 片：&nbsp;&nbsp;</label><input id="writing_image" type="file">
+                </div><br>
+            </form>
+        </div>
+        <!-- 听力题  -->
+        <div class="tab-pane active in" id="tab_listening">
+            <form id="part_listening" class="form-inline">
+            <div class="form-group">
+                听力头部：<input id="listening_head" class="input-xxlarge" type="text" placeholder="Part II Listening Comprehension(25 minutes)" >
+                </div>&nbsp;&nbsp;&nbsp;
+                <!--- 按钮 start -->
+                <button class="btn btn_add_section" type="button"><i class="icon-plus"></i>&nbsp; 新增Section</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button class="btn btn-primary save_listening" type="button"><i class="icon-hand-up"></i>&nbsp;&nbsp;&nbsp;保&nbsp;存</button>
+                <!--- 按钮 end -->
+                <div class="block alert alert-success listening_section">&nbsp;Section：<br>
+                    &nbsp;&nbsp;&nbsp;头部：<input class="input-xlarge section_name" type="text" placeholder="Section A" >
+                    &nbsp;&nbsp;&nbsp;说明：<textarea class="form-control input-xlarge section_direction" rows="3" placeholder="In this section, you will hear 8 short conversations and ..."></textarea>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn_add_question" type="button" onclick="addQuestion(this)"><i class="icon-plus"></i>&nbsp; 新增选择题</button><br>
+                    <div class="block alert alert-warning question_info" >&nbsp;选择题：<br>
+                        &nbsp;&nbsp;&nbsp;题号：<input class="input-mini question_number" type="text" placeholder="1">
+                        &nbsp;&nbsp;&nbsp;头部：<input class="input-medium answer_name" type="text">
+                        &nbsp;&nbsp;问题：<textarea class="form-control question_body" rows="3"></textarea>&nbsp;&nbsp;&nbsp;
+                        <button class="btn" type="button" onclick="addAnswer(this)"><i class="icon-plus"></i>&nbsp; 新增答案</button><br>
+                        &nbsp;&nbsp;&nbsp;答案：<input class="answer" type="text" placeholder="A)">&nbsp;&nbsp;&nbsp;答案：<input class="answer" type="text" placeholder="B)"><br>
+                        &nbsp;&nbsp;&nbsp;答案：<input class="answer" type="text" placeholder="C)">&nbsp;&nbsp;&nbsp;答案：<input class="answer" type="text" placeholder="D)"><br>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    </div>
+  </div>
+</div>
+    
+<script type="text/javascript">
+    var section_serials = 65;
+    var question_serials = 1;
+
+    function GetRandom() {
+        return(1 + Math.round(Math.random() * 10000));
+    }
+
+    function addAnswer(e){
+        $(e).parent('.question_info').append('&nbsp;&nbsp;&nbsp;<label>答案：</label><input class="answer" type="text"><br>');
+    }
+
+    function addQuestion(e) {
+        question_serials++;
+        $(e).parent(".listening_section").append('<div class="block alert alert-warning question_info" >&nbsp;选择题：<br>'+
+                '&nbsp;&nbsp;&nbsp;题号：<input class="input-mini question_number" type="text" placeholder="' + question_serials + '">'+
+                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;头部：<input class="input-medium answer_name" type="text">'+
+                '&nbsp;&nbsp;问题：<textarea class="form-control question_body" rows="3"></textarea>&nbsp;&nbsp;&nbsp;'+
+                '<button class="btn" onclick="addAnswer(this)" type="button"><i class="icon-plus"></i>&nbsp; 新增答案</button><br>'+
+                '&nbsp;&nbsp;&nbsp;答案：<input class="answer" type="text" placeholder="A)">&nbsp;&nbsp;&nbsp;答案：<input class="answer" type="text" placeholder="B)"><br>'+
+                '&nbsp;&nbsp;&nbsp;答案：<input class="answer" type="text" placeholder="C)">&nbsp;&nbsp;&nbsp;答案：<input class="answer" type="text" placeholder="D)"><br>'+
+                '</div>');
+    }
+
+    $(function() {
+        $('.btn_add_section').click(function(){
+            section_serials++;
+            question_serials++;
+            $("#part_listening").append('<div class="block alert alert-success listening_section">&nbsp;Section：<br>'+
+                    '&nbsp;&nbsp;&nbsp;头部：<input class="input-xlarge section_name" type="text" placeholder="Section ' + String.fromCharCode(section_serials) + '" >'+
+                    '&nbsp;&nbsp;&nbsp;说明：<textarea class="form-control input-xlarge section_direction" rows="3" placeholder="In this section, you will hear 8 short conversations and ..."></textarea>'+
+                    '&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn_add_question" type="button" onclick="addQuestion(this)"><i class="icon-plus"></i>&nbsp; 新增选择题</button><br>'+
+                    '<div class="block alert alert-warning question_info" >&nbsp;选择题：<br>'+
+                    '&nbsp;&nbsp;&nbsp;题号：<input class="input-mini question_number" type="text" placeholder="' + question_serials + '">'+
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;头部：<input class="input-medium answer_name" type="text">'+
+                    '&nbsp;&nbsp;问题：<textarea class="form-control question_body" rows="3"></textarea>&nbsp;&nbsp;&nbsp;'+
+                    '<button class="btn" type="button" onclick="addAnswer(this)"><i class="icon-plus"></i>&nbsp; 新增答案</button><br>'+
+                    '&nbsp;&nbsp;&nbsp;答案：<input class="answer" type="text" placeholder="A)">&nbsp;&nbsp;&nbsp;答案：<input class="answer" type="text" placeholder="B)"><br>'+
+                    '&nbsp;&nbsp;&nbsp;答案：<input class="answer" type="text" placeholder="C)">&nbsp;&nbsp;&nbsp;答案：<input class="answer" type="text" placeholder="D)"><br>'+
+                    '</div></div>');
+        });
+
+        $('.save_listening').click(function(){
+            var saveObjList=[]
+            $('.listening_section').each(function(){
+                var obj={
+                    name:$(this).find('.section_name').val(),
+                    direction:$(this).find('.section_direction').val()
+                }
+
+                console.log(obj);
+                saveObjList.push(obj)
+            })
+        });
+    });
+</script>
+    
+  </body>
+</html>
+
+

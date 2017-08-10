@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>金山词霸试题管理平台</title>
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <meta charset="utf-8" />
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <!-- Bootstrap and Datatables Bootstrap theme (OPTIONAL) -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script type = "text/javascript" src="static/js/common.js"></script>
+    <style type="text/css" src="common.css"></style>
+
+    <style type="text/css">
+        #line-chart {
+            height:300px;
+            width:800px;
+            margin: 0px auto;
+            margin-top: 1em;
+        }
+        .brand { font-family: georgia, serif; }
+        .brand .first {
+            color: #ccc;
+            font-style: italic;
+        }
+        .brand .second {
+            color: #fff;
+            font-weight: bold;
+        }
+    </style>
+    
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="../assets/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
+  </head>
+
+  <!--[if lt IE 7 ]> <body class="ie ie6"> <![endif]-->
+  <!--[if IE 7 ]> <body class="ie ie7 "> <![endif]-->
+  <!--[if IE 8 ]> <body class="ie ie8 "> <![endif]-->
+  <!--[if IE 9 ]> <body class="ie ie9 "> <![endif]-->
+  <!--[if (gt IE 9)|!(IE)]><!--> 
+  <body class=""> 
+  <!--<![endif]-->
+    
+<div class="content">
+    <div class="header"><h1 class="page-title">试题管理</h1></div>
+    <ul class="breadcrumb">
+        <li><a href="index.php?c=index&m=home">Home</a> <span class="divider">/</span></li>
+        <li><a href="index.php?c=index&m=trade_list">Trade</a> <span class="divider">/</span></li>
+        <li class="active">Detail</li>
+    </ul>
+    <div class="container-fluid">
+        <div class="row-fluid">
+
+<div class="btn-toolbar">
+    <button href="#refund_modal" data-toggle="modal" class="btn"><i class="icon-eye-open"></i>&nbsp;预览</button>
+    <a href="index.php?c=goods&uid=<?php echo $trade_info['uid']; ?>" class="btn btn-primary"><i class="icon-file"></i>&nbsp;生成试卷</a>
+    <div class="btn-group"></div>
+</div>
+<div class="well">
+    <ul class="nav nav-tabs">
+        <li><a href="#tab_writing" data-toggle="tab">写作题</a></li>
+        <li><a href="#tab_listening" data-toggle="tab">听力题</a></li>
+        <li class="active"><a href="#tab_reading" data-toggle="tab">阅读题</a></li>
+        <li><a href="#profile" data-toggle="tab">翻译题</a></li>
+    </ul>
+
+    <div id="myTabContent" class="tab-content">
+
+        <!-- 写作题  -->
+        <div class="tab-pane fade" id="tab_writing">
+            <form id="part_writing" class="form-inline">
+                <div class="form-group"> Part头： <!--写作题头部-->
+                    <input id="writing_head" type="text" class="input-xxlarge" placeholder="Part I Writing (30 minutes)">
+                </div><br>
+                <div class="form-group"> 说 明：&nbsp;&nbsp; <!--写作题说明-->
+                    <textarea id="writing_direction" class="form-control input-xxlarge" rows="6" placeholder="For this part, you are allowed 30 minutes to write a short essay on the following question..."></textarea>
+                </div><br>
+                <div class="form-group">  图 片：&nbsp;&nbsp;<!--写作题图片-->
+                    <input id="writing_image" type="file">
+                    <input id="writing_image2" type="file">
+                </div><br>
+            </form>
+        </div> <!-- 写作题 end -->
+
+        <!-- 听力题  -->
+        <div class="tab-pane fade" id="tab_listening">
+            <form id="part_listening" class="form-inline">
+                听力头部：<input id="listening_head" class="input-xxlarge" type="text" placeholder="Part II Listening Comprehension(25 minutes)" >&nbsp;&nbsp;&nbsp;
+                <button class="btn btn_add_listening_section" type="button" onclick="addListenSection(this)"><i class="icon-plus"></i>&nbsp; 新增Section</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button class="btn btn-primary save_listening" type="button"><i class="icon-hand-up"></i>&nbsp;&nbsp;&nbsp;保&nbsp;存</button>
+                <div class="block alert alert-success listening_section"><b>Section：</b><br>   <!--- Section start -->
+                    &nbsp;&nbsp;&nbsp;头部：<input class="input-xlarge section_name" type="text" placeholder="Section A" >
+                    &nbsp;&nbsp;&nbsp;说明：<textarea class="form-control input-xlarge section_direction" rows="3" placeholder="In this section, you will hear 8 short conversations and ..."></textarea>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn_add_passage" type="button" onclick="addListenPassage(this)"><i class="icon-plus"></i>&nbsp; 新增Passage</button><br>
+                    <div class="block alert alert-info listening_passage"><b>Passage</b>说明： <input class="input-xlarge passage_direction" type="text" > <!--- Passage start -->
+                        &nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn_add_question" type="button" onclick="addListenQuestion(this)"><i class="icon-plus"></i>&nbsp; 新增选择题</button><br>
+                    </div>  <!--- Passage end -->
+                </div>  <!--- Section end -->
+            </form>
+        </div> <!-- 听力题 end -->
+
+        <!-- 阅读题  -->
+        <div class="tab-pane active in" id="tab_reading">
+            <form id="part_reading" class="form-inline">
+                阅读头部：</label><input id="reading_head" class="input-xxlarge" type="text" placeholder="Part III Reading Comprehension (40 minutes)" >&nbsp;&nbsp;&nbsp;
+                <button class="btn btn_add_reading_section" type="button" onclick="addReadSection(this)"><i class="icon-plus"></i>&nbsp; 新增Section</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button class="btn btn-primary save_reading" type="button"><i class="icon-hand-up"></i>&nbsp;&nbsp;&nbsp;保&nbsp;存</button>
+                <div class="block alert alert-success reading_section"><b>Section：</b><br>   <!--- Section start -->
+                    &nbsp;&nbsp;&nbsp;头部：<input class="input-xlarge section_name" type="text" placeholder="Section A" >
+                    &nbsp;&nbsp;&nbsp;说明：<textarea class="form-control input-xlarge section_direction" rows="3" placeholder="In this section, you will hear 8 short conversations and ..."></textarea>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn_add_passage" type="button" onclick="addReadPassage(this)"><i class="icon-plus"></i>&nbsp; 新增Passage</button><br>
+                    <div class="block alert alert-info reading_passage"><b>Passage：</b><!--- Passage start -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <select class="input-medium question_option"><option value="1">选择题</option><option value="2">完形填空</option><option value="3">连线题</option><option value="4">填空题</option></select>
+                        <button class="btn btn_add_question" type="button" onclick="addReadQuestion(this)"><i class="icon-plus"></i>&nbsp; 新增题目</button><br><br>
+                        名称：<input class="input-medium passage_name" type="text" >
+                        &nbsp;&nbsp;&nbsp;说明：<input class="input-xlarge passage_direction" type="text" >
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;图片：<input class="image" type="file">
+                    </div>  <!--- Passage end -->
+                </div>  <!--- Section end -->
+            </form>
+        </div> <!-- 阅读题 end -->
+    </div>
+</div>
+
+    </div>
+  </div>
+</div>
+    
+<script type="text/javascript">
+    var section_serials = 65;
+    var question_serials = 1;
+
+    function GetRandom() {
+        return(1 + Math.round(Math.random() * 10000));
+    }
+
+    function addListenSection(e) {   //新增听力section
+        section_serials++;
+        $("#part_listening").append('<div class="block alert alert-success listening_section"><b>Section：</b><br>'+
+                '&nbsp;&nbsp;&nbsp;头部：<input class="input-xlarge section_name" type="text" placeholder="Section ' + String.fromCharCode(section_serials) + '" >'+
+                '&nbsp;&nbsp;&nbsp;说明：<textarea class="form-control input-xlarge section_direction" rows="3" placeholder="In this section, you will hear 8 short conversations and ..."></textarea>'+
+                '&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn_add_passage" type="button" onclick="addListenPassage(this)"><i class="icon-plus"></i>&nbsp; 新增Passage</button><br>'+
+                '<div class="block alert alert-info listening_passage"><b>Passage说明：</b><input class="input-xlarge passage_direction" type="text" >'+
+                '&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn_add_question" type="button" onclick="addListenQuestion(this)"><i class="icon-plus"></i>&nbsp; 新增选择题</button><br>'+
+                '</div>' +
+                '</div>');
+    }
+
+    function addListenPassage(e) {  //新增听力Passage
+        $(e).parent(".listening_section").append('<div class="block alert alert-info listening_passage"><b>Passage说明： </b><input class="input-xlarge passage_direction" type="text" >'+
+                '&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn_add_question" type="button" onclick="addListenQuestion(this)"><i class="icon-plus"></i>&nbsp; 新增选择题</button><br>'+
+                '</div>');
+    }
+
+    function addListenAnswer(e){  //新增听力答案
+        $(e).parent('.question_info').append('答案：<input class="answer" type="text"><br>');
+    }
+
+    function addListenQuestion(e) {  //新增听力问题
+        question_serials++;
+        $(e).parent(".listening_passage").append('<div class="block alert alert-warning question_info" ><b>选择题</b><br>'+
+                '题号：<input class="input-mini question_number" type="text" placeholder="' + question_serials + '">'+
+                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
+                '问题：<textarea class="form-control question_body" rows="3"></textarea>&nbsp;&nbsp;&nbsp;'+
+                '<button class="btn" type="button" onclick="addListenAnswer(this)"><i class="icon-plus"></i>&nbsp; 新增答案</button><br>'+
+                '答案：<input class="answer" type="text" placeholder="A)">&nbsp;&nbsp;答案：<input class="answer" type="text" placeholder="B)"><br>'+
+                '答案：<input class="answer" type="text" placeholder="C)">&nbsp;&nbsp;答案：<input class="answer" type="text" placeholder="D)"><br>'+
+                '</div>');
+    }
+
+    ///////////////////////// 阅读 ///////////////////////////
+    function addReadSection(e) {
+        section_serials++;
+        $("#part_reading").append('<div class="block alert alert-success reading_section"><b>Section：</b><br>'+
+                '&nbsp;&nbsp;&nbsp;头部：<input class="input-xlarge section_name" type="text" placeholder="Section A" >'+
+                '&nbsp;&nbsp;&nbsp;说明：<textarea class="form-control input-xlarge section_direction" rows="3" placeholder="In this section, you will hear 8 short conversations and ..."></textarea>'+
+                '&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn_add_passage" type="button" onclick="addReadPassage(this)"><i class="icon-plus"></i>&nbsp; 新增Passage</button><br>'+
+                '<div class="block alert alert-info reading_passage"><b>Passage：</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
+                '<select class="input-medium question_option"><option value="1">选择题</option><option value="2">完形填空</option><option value="3">连线题</option><option value="4">填空题</option></select>'+
+                '<button class="btn btn_add_question" type="button" onclick="addReadQuestion(this)"><i class="icon-plus"></i>&nbsp; 新增题目</button><br><br>'+
+                '名称：<input class="input-medium passage_name" type="text" >'+
+                '&nbsp;&nbsp;&nbsp;说明：<input class="input-xlarge passage_direction" type="text" >'+
+                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;图片：<input class="image" type="file">'+
+                '</div>'+
+                '</div>');
+    }
+
+    function addReadPassage(e) {
+        $(e).parent('.reading_section').append('<div class="block alert alert-info reading_passage"><b>Passage：</b>' +
+                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
+                '<select class="input-medium question_option"><option value="1">选择题</option><option value="2">完形填空</option><option value="3">连线题</option><option value="4">填空题</option></select>'+
+                '&nbsp;<button class="btn btn_add_question" type="button" onclick="addReadQuestion(this)"><i class="icon-plus"></i>&nbsp; 新增题目</button><br><br>'+
+                '名称：<input class="input-medium passage_name" type="text" >'+
+                '&nbsp;&nbsp;&nbsp;说明：<input class="input-xlarge passage_direction" type="text" >'+
+                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;图片：<input class="image" type="file">'+
+                '</div>');
+    }
+
+    function addReadChooseAnswer(e){  //新增阅读选择题答案
+        $(e).parent('.choose_question_type').append('答案：<input class="answer" type="text"><br>');
+    }
+
+    function addReadCompletionQuestion(e){  //新增完形填空问答组
+        question_serials++;
+        $(e).parent('.completion_question_type').append('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                '问题：<input class="input-xxlarge question_body" type="text">'+
+                '&nbsp;&nbsp;&nbsp;答案：<input class="input-xlarge answer" type="text"><br>');
+    }
+
+    function addReadMatchQuestion(e){  //新增连线题问答组
+        question_serials++;
+        $(e).parent('.match_question_type').append('问题：<input class="input-xxlarge question_body" type="text">&nbsp;&nbsp;&nbsp;'+
+                '答案头：<input class="input-large answer_name" type="text">&nbsp;&nbsp;&nbsp;'+
+                '答案：<input class="input-xlarge answer" type="text"><br>');
+    }
+
+    function addReadBlankQuestion(e){  //新增填空题问题
+        question_serials++;
+        $(e).parent('.blank_question_type').append('问题：<input class="input-xxlarge question_body" type="text"><br>');
+    }
+
+    function addReadQuestion(e) {
+        question_serials++;
+        var question_type = $(e).parent('.reading_passage').find('.question_option option:selected').val();
+        if(question_type == 1) { //选择题
+            $(e).parent(".reading_passage").append('<div class="block alert alert-warning choose_question_type" ><b>选择题&nbsp; &nbsp; </b>'+
+                    '题号：<input class="input-mini question_number" type="text" placeholder="' + question_serials + '"><br>'+
+                    '问题：<textarea class="form-control question_body" rows="3"></textarea>&nbsp;&nbsp;&nbsp;'+
+                    '答案头部：<input class="answer_name" type="text">'+
+                    '&nbsp;&nbsp;&nbsp;<button class="btn" type="button" onclick="addReadChooseAnswer(this)"><i class="icon-plus"></i>&nbsp; 新增答案</button><br>'+
+                    '答案：<input class="answer" type="text" placeholder="A)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;答案：<input class="answer" type="text" placeholder="B)"><br>'+
+                    '答案：<input class="answer" type="text" placeholder="C)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;答案：<input class="answer" type="text" placeholder="D)"><br>'+
+                    '</div>');
+        } else if(question_type == 2) { //完形填空
+            $(e).parent(".reading_passage").append('<div class="block alert alert-warning completion_question_type" ><b>完型填空</b>'+
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;解析翻译：<input class="input-xxlarge completion_translation" type="text">&nbsp;&nbsp;&nbsp;&nbsp;' +
+                    '<button class="btn" type="button" onclick="addReadCompletionQuestion(this)"><i class="icon-plus"></i>&nbsp; 新增问答组</button><br>'+
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                    '起始题号：<input class="input-mini question_number" type="text" placeholder="' + question_serials + '">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                    '问题头部：<input class="input-xlarge answer_name" type="text"><br><br>'+
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                    '问题：<input class="input-xxlarge question_body" type="text">&nbsp;&nbsp;&nbsp;'+
+                    '答案：<input class="input-xlarge answer" type="text"><br>' +
+                    '</div>');
+        } else if(question_type == 3) {
+            $(e).parent(".reading_passage").append('<div class="block alert alert-warning match_question_type" ><b>连线题</b>'+
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;起始题号：<input class="input-mini question_number" type="text" placeholder="' + question_serials + '">' +
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                    '<button class="btn" type="button" onclick="addReadMatchQuestion(this)"><i class="icon-plus"></i>&nbsp; 新增问答组</button><br><br>'+
+                    '问题：<input class="input-xxlarge question_body" type="text">&nbsp;&nbsp;&nbsp;'+
+                    '答案头：<input class="input-large answer_name" type="text">&nbsp;&nbsp;&nbsp;'+
+                    '答案：<input class="input-xlarge answer" type="text"><br>' +
+                    '</div>');
+        } else if (question_type == 4) {
+            $(e).parent(".reading_passage").append('<div class="block alert alert-warning blank_question_type" ><b>填空题</b>'+
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;起始题号：<input class="input-mini question_number" type="text" placeholder="' + question_serials + '">' +
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                    '<button class="btn" type="button" onclick="addReadBlankQuestion(this)"><i class="icon-plus"></i>&nbsp; 新增问题</button><br><br>'+
+                    '问题：<input class="input-xxlarge question_body" type="text"><br>' +
+                    '</div>');
+        }
+    }
+
+    $(function() {
+        //保存阅读信息
+        $('.save_reading').click(function(){
+            var saveObject = []
+            $('.reading_section').each(function(){
+                var sectionObj = {}
+                sectionObj.name = $(this).find('.section_name').val()
+                sectionObj.direction = $(this).find('.section_direction').val()
+                sectionObj.passage = []
+                $(this).find('.reading_passage').each(function(){  //passage
+                    var passage = {}
+                    passage.passage_name = $(this).find('.passage_name').val()
+                    passage.passage_direction = $(this).find('.passage_direction').val()
+                    passage.question = []
+                    $(this).find("div[class$='_question_type']").each(function(){ //question
+                        if($(this).hasClass('choose_question_type')) {  //选择题
+                            var question_info = {}
+                            question_info.type = 'choose_question_type';
+                            question_info.number = $(this).find('.question_number').val()
+                            question_info.question_body = $(this).find('.question_body').val()
+                            question_info.answer_name = $(this).find('.answer_name').val()
+
+                            question_info.answer = []
+                            $(this).find('.answer').each(function(){
+                                if($(this).val() != '') {
+                                    question_info.answer.push($(this).val())
+                                }
+                            })
+                            passage.question.push(question_info)
+                        } else if($(this).hasClass('completion_question_type')) {  //完形填空
+                            var question_info = {}
+                            question_info.type = 'completion_question_type';
+                            question_info.translation = $(this).find('.completion_translation').val()
+                            question_info.start_number = $(this).find('.question_number').val()
+                            question_info.answer_name = $(this).find('.answer_name').val()
+                            question_info.question_body = []
+                            $(this).find('.question_body').each(function(){
+                                question_info.question_body.push($(this).val())
+                            })
+                            question_info.answer = []
+                            $(this).find('.answer').each(function(){
+                                question_info.answer.push($(this).val())
+                            })
+
+                            passage.question.push(question_info)
+                        } else if($(this).hasClass('match_question_type')) {  //连线题
+                            var question_info = {}
+                            question_info.type = 'match_question_type';
+                            question_info.start_number = $(this).find('.question_number').val()
+                            question_info.question_body = []
+                            $(this).find('.question_body').each(function(){
+                                question_info.question_body.push($(this).val())
+                            })
+
+                            question_info.answer_name = []
+                            $(this).find('.answer_name').each(function(){
+                                question_info.answer_name.push($(this).val())
+                            })
+
+                            question_info.answer = []
+                            $(this).find('.answer').each(function(){
+                                question_info.answer.push($(this).val())
+                            })
+                            passage.question.push(question_info)
+                        } else if($(this).hasClass('blank_question_type')) {  //填空题
+                            var question_info = {}
+                            question_info.type = 'blank_question_type';
+                            question_info.start_number = $(this).find('.question_number').val()
+                            question_info.question_body = []
+                            $(this).find('.question_body').each(function(){
+                                if($(this).val() != '') {
+                                    question_info.question_body.push($(this).val())
+                                }
+                            })
+                            passage.question.push(question_info)
+                        }
+                    })
+                    sectionObj.passage.push(passage)
+                });
+                saveObject.push(sectionObj)
+            });
+
+            var uploadObj = {}
+            uploadObj.head = $('#reading_head').val();
+            uploadObj.sections = saveObject;
+            console.log(JSON.stringify(uploadObj))
+        });
+
+        //保存听力信息
+        $('.save_listening').click(function(){
+            var saveObjList = []
+            $('.listening_section').each(function(){ //section
+                var sectionObj = {}
+                sectionObj.name = $(this).find('.section_name').val()
+                sectionObj.direction = $(this).find('.section_direction').val()
+
+                sectionObj.passage = []
+                $(this).find('.listening_passage').each(function(){  //passage
+                    var passage = {}
+                    passage.passage_direction = $(this).find('.passage_direction').val()
+                    passage.question = []
+                    $(this).find('.question_info').each(function(){ //question
+                        var question_info = {}
+                        question_info.number = $(this).find('.question_number').val()
+                        question_info.question_body = $(this).find('.question_body').val()
+                        question_info.answer = []
+                        $(this).find('.answer').each(function(){
+                            if($(this).val() != '') {
+                                question_info.answer.push($(this).val())
+                            }
+                        })
+                        passage.question.push(question_info)
+                    })
+                    sectionObj.passage.push(passage)
+                });
+                saveObjList.push(sectionObj)
+            })
+
+            var uploadObj = {}
+            uploadObj.head = $('#listening_head').val();
+            uploadObj.sections = saveObjList;
+            console.log(JSON.stringify(saveObjList))
+
+            //上传到服务器
+            $.ajax({
+                url : '/index.php?c=exam&m=upload_listening',
+                type : 'POST',
+                data : JSON.stringify(uploadObj),
+                success : function(result) {
+                    if(result == 1){
+                        alert("保存成功 : " + result);
+                    }else{
+                        alert("保存失败 : " + result);
+                    }
+                },
+                error : function(responseStr) {
+                    alert("error");
+                }
+            });
+        });
+    });
+</script>
+    
+  </body>
+</html>
+
+
