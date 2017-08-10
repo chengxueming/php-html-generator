@@ -1,0 +1,502 @@
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <!-- Bootstrap and Datatables Bootstrap theme (OPTIONAL) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <!-- add  -->
+    <link rel="stylesheet" type="text/css" href="stylesheets/theme.css">
+    <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.css">
+    <link rel="shortcut icon" href="../assets/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>    
+    <script src="static/js/pagination.js" type="text/javascript"></script>
+    <!-- add  -->
+    <script src="https://cdn.bootcss.com/simple-ajax-uploader/2.6.2/SimpleAjaxUploader.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+<body>
+{body}
+<script>
+    (function(global) {
+        // body...
+        global.in_array = function(arr, value) {
+            return arr.indexOf(value) !== -1;
+        };
+        global.delCloneNodeId = function(cloneNode) {
+            if(typeof cloneNode == "undefined") {
+                return ;
+            }
+            function getPropertyPart(value, preg) {
+                var part = value.replace(preg, "");
+                return part;
+            }
+            this.findMaxNumPart = function(tag, head, prop = "id") {
+                var max = 0;
+                $(document).find(tag+"["+prop+"^='"+head+"']").each(function(index, ele){
+                    var value = $(ele).attr(prop);
+                    var part = getPropertyPart(value, /[A-Z|a-z]+/);
+                    if(part > max) {
+                        max = part;
+                    }
+                });
+                return parseInt(max) + this.rand(1000);
+            }
+            this.rand = function(maxNum) {
+                return parseInt(Math.random() * maxNum)
+            }
+            this.propertyUniq = function(node) {
+                var white_list = ["edit-toolbar", "page", "open"];
+                var value = $(cloneNode).attr("id");
+                if(typeof value != "undefined" && !in_array(value, white_list)) {
+                    var charPart = getPropertyPart(value, /\d+/);
+                    var numPart = getPropertyPart(value, /[A-Z|a-z]+/);
+                    var tagName = node[0].tagName.toLowerCase();
+                    var maxNum = this.findMaxNumPart(tagName, charPart, "id");
+                    console.log(maxNum);
+                    var newValue = charPart + (parseInt(maxNum) + 1);
+                    node.attr("id", newValue);
+                    node.attr("name", newValue);
+                }
+            }
+            this.propertyUniq($(cloneNode));
+            $(cloneNode).children().each(function(index, ele) {
+                delCloneNodeId(ele);
+            });
+        };
+        global.uploadImg = function(inputFile, inputText, c, m) {
+            function isImage(name) {
+                if (name == "") {
+                    alert("图片地址不能为空");
+                    return false;
+                }
+                return true;
+            }
+            if (isImage(inputFile.val())) {
+                $.ajaxFileUpload({
+                    url: '/index.php?c='+c+'&m='+m+'&file_id=' + inputFile.attr("id"), //用于文件上传的服务器端请求地址
+                    secureuri: false, //一般设置为false
+                    fileElementId: inputFile.attr("id"), //文件上传空间的id属性  <input type="file" id="file" name="file" />
+                    dataType: 'json', //返回值类型 一般设置为json
+                    success: function(data) //服务器成功响应处理函数
+                    {
+                        if(data.errno == 0) {
+                            alert("上传成功");
+                            inputText.attr("value", data.image_url);
+                        }else{
+                            alert(data.errmsg);
+                        }
+                    },
+                    error: function(data, status, e) //服务器响应失败处理函数
+                    {
+                        alert("上传失败");
+                        alert(e);
+                    }
+                });
+            } else {
+                $.messager.alert('信息提示', '文件类型不合法！');
+            }
+        };
+        global.jqChild = function(ele, index) {
+            return $($(ele).children()[index]);
+        };
+        global.openEdit = function(node) {
+            $('#page').html($(node).val());
+            var input = $(node);
+            $( '#edit-toolbar' ).dialog(
+                    {  modal: true,
+                        autoOpen: false,
+                        width: "500px",
+                        close:function() {      input.val($('#page').html());    }
+                    });
+            $('#edit-toolbar').dialog('open');
+        }
+        global.getCursortPosition = function(textDom) {
+            var cursorPos = 0;
+            if (document.selection) {
+                // IE Support
+                textDom.focus ();
+                var selectRange = document.selection.createRange();
+                selectRange.moveStart ('character', -textDom.value.length);
+                cursorPos = selectRange.text.length;
+            }else if (textDom.selectionStart || textDom.selectionStart == '0') {
+                // Firefox support
+                cursorPos = textDom.selectionStart;
+            }
+            return cursorPos;
+        }
+        global.setCaretPosition = function(textDom, pos){
+            if(textDom.setSelectionRange) {
+                // IE Support
+                textDom.focus();
+                textDom.setSelectionRange(pos, pos);
+            }else if (textDom.createTextRange) {
+                // Firefox support
+                var range = textDom.createTextRange();
+                range.collapse(true);
+                range.moveEnd('character', pos);
+                range.moveStart('character', pos);
+                range.select();
+            }
+        };
+        (function() {
+            $("div[type='mapDiv']").each(function(){
+                global.delCloneNodeId($(this));
+            });
+        })();
+    })(window)
+</script>
+<script>
+    jQuery.extend({
+
+        createUploadIframe: function(id, uri)
+        {
+            //create frame
+            var frameId = 'jUploadFrame' + id;
+            var iframeHtml = '<iframe id="' + frameId + '" name="' + frameId + '" style="position:absolute; top:-9999px; left:-9999px"';
+            if(window.ActiveXObject)
+            {
+                if(typeof uri== 'boolean'){
+                    iframeHtml += ' src="' + 'JavaScript:false' + '"';
+                }
+                else if(typeof uri== 'string'){
+                    iframeHtml += ' src="' + uri + '"';
+                }
+            }
+            iframeHtml += ' />';
+            jQuery(iframeHtml).appendTo(document.body);
+            var frame = jQuery('#' + frameId).get(0);
+            //console.log(frame);
+            return frame;
+        },
+        createUploadForm: function(id, fileElementId, data)
+        {
+            //create form
+            var formId = 'jUploadForm' + id;
+            var fileId = 'jUploadFile' + id;
+            var form = jQuery('<form  action="" method="POST" name="' + formId + '" id="' + formId + '" enctype="multipart/form-data"></form>');
+            if(data)
+            {
+                for(var i in data)
+                {
+                    jQuery('<input type="hidden" name="' + i + '" value="' + data[i] + '" />').appendTo(form);
+                }
+            }
+            var oldElement = jQuery('#' + fileElementId);
+            var newElement = jQuery(oldElement).clone();
+            jQuery(oldElement).attr('id', fileId);
+            jQuery(oldElement).before(newElement);
+            jQuery(oldElement).appendTo(form);
+
+
+            //set attributes
+            jQuery(form).css('position', 'absolute');
+            jQuery(form).css('top', '-1200px');
+            jQuery(form).css('left', '-1200px');
+            jQuery(form).appendTo('body');
+            return form;
+        },
+        ajaxFileUpload: function(s) {
+            // TODO introduce global settings, allowing the client to modify them for all requests, not only timeout
+            s = jQuery.extend({}, jQuery.ajaxSettings, s);
+            var id = new Date().getTime()
+            var form = jQuery.createUploadForm(id, s.fileElementId, (typeof(s.data)=='undefined'?false:s.data));
+            var io = jQuery.createUploadIframe(id, s.secureuri);
+            var frameId = 'jUploadFrame' + id;
+            var formId = 'jUploadForm' + id;
+            // Watch for a new set of requests
+            if ( s.global && ! jQuery.active++ )
+            {
+                jQuery.event.trigger( "ajaxStart" );
+            }
+            var requestDone = false;
+            // Create the request object
+            var xml = {}
+            if ( s.global )
+                jQuery.event.trigger("ajaxSend", [xml, s]);
+            // Wait for a response to come back
+            var uploadCallback = function(isTimeout)
+            {
+                var io = document.getElementById(frameId);
+                try
+                {
+                    //console.log(io);
+                    if(io.contentWindow)
+                    {
+                        xml.responseText = io.contentWindow.document.body?io.contentWindow.document.body.innerHTML:null;
+                        xml.responseXML = io.contentWindow.document.XMLDocument?io.contentWindow.document.XMLDocument:io.contentWindow.document;
+
+                    }else if(io.contentDocument)
+                    {
+                        xml.responseText = io.contentDocument.document.body?io.contentDocument.document.body.innerHTML:null;
+                        xml.responseXML = io.contentDocument.document.XMLDocument?io.contentDocument.document.XMLDocument:io.contentDocument.document;
+                    }
+                    //console.log(xml);
+                }catch(e)
+                {
+                    jQuery.handleError(s, xml, null, e);
+                }
+                if ( xml || isTimeout == "timeout")
+                {
+                    requestDone = true;
+                    var status;
+                    try {
+                        status = isTimeout != "timeout" ? "success" : "error";
+                        // Make sure that the request was successful or notmodified
+                        if ( status != "error" )
+                        {
+                            // process the data (runs the xml through httpData regardless of callback)
+                            var data = jQuery.uploadHttpData( xml, s.dataType );
+                            // If a local callback was specified, fire it and pass it the data
+                            if ( s.success )
+                                s.success( data, status );
+
+                            // Fire the global callback
+                            if( s.global )
+                                jQuery.event.trigger( "ajaxSuccess", [xml, s] );
+                        } else
+                            jQuery.handleError(s, xml, status);
+                    } catch(e)
+                    {
+                        status = "error";
+                        jQuery.handleError(s, xml, status, e);
+                    }
+                    // The request was completed
+                    if( s.global )
+                        jQuery.event.trigger( "ajaxComplete", [xml, s] );
+                    // Handle the global AJAX counter
+                    if ( s.global && ! --jQuery.active )
+                        jQuery.event.trigger( "ajaxStop" );
+                    // Process result
+                    if ( s.complete )
+                        s.complete(xml, status);
+                    jQuery(io).unbind()
+                    setTimeout(function()
+                    {	try
+                    {
+                        jQuery(io).remove();
+                        jQuery(form).remove();
+
+                    } catch(e)
+                    {
+                        jQuery.handleError(s, xml, null, e);
+                    }
+                    }, 100)
+                    xml = null
+                }
+            }
+            // Timeout checker
+            if ( s.timeout > 0 )
+            {
+                setTimeout(function(){
+                    // Check to see if the request is still happening
+                    if( !requestDone ) uploadCallback( "timeout" );
+                }, s.timeout);
+            }
+            try
+            {
+                var form = jQuery('#' + formId);
+                jQuery(form).attr('action', s.url);
+                jQuery(form).attr('method', 'POST');
+                jQuery(form).attr('target', frameId);
+                if(form.encoding)
+                {
+                    jQuery(form).attr('encoding', 'multipart/form-data');
+                }
+                else
+                {
+                    jQuery(form).attr('enctype', 'multipart/form-data');
+                }
+                jQuery(form).submit();
+            } catch(e)
+            {
+                jQuery.handleError(s, xml, null, e);
+            }
+
+            jQuery('#' + frameId).load(uploadCallback	);
+            return {abort: function () {}};
+        },
+        uploadHttpData: function( r, type ) {
+            var data = !type;
+            data = type == "xml" || data ? r.responseXML : r.responseText;
+
+            data = data.replace('<audio controls="controls" style="display: none;"></audio>','');//返回数据莫名带<audio> 这里去掉
+
+            // If the type is "script", eval it in global context
+            if ( type == "script" )
+                jQuery.globalEval( data );
+            // Get the JavaScript object, if JSON is used.
+            if ( type == "json" )
+                eval( "data = " + data );
+            // evaluate scripts within html
+            if ( type == "html" )
+                jQuery("<div>").html(data).evalScripts();
+            return data;
+        },handleError: function( s, xhr, status, e ) {
+            // If a local callback was specified, fire it
+            if ( s.error )
+                s.error( xhr, status, e );
+            // If we have some XML response text (e.g. from an AJAX call) then log it in the console
+            else if(xhr.responseText)
+                console.log(xhr.responseText);
+        }
+    })
+</script>
+<style>
+    #zoom-button {
+        width: 55px;
+    }
+    #fontname-button,
+    #fontsize-button {
+        width: 45px;
+    }
+    #forecolor-button {
+        width: 50px;
+    }
+    #hilitecolor-button {
+        width: 70px;
+    }
+    h1.page-title {
+        font-weight: bold;
+    }
+    #bold {
+        font-weight: bold;
+    }
+    #italic {
+        font-style: italic;
+    }
+    #underline {
+        text-decoration: underline;
+    }
+    #edit-toolbar .toolbar {
+        font-size: .75em;
+        z-index: 200;
+    }
+    #page {
+        width: 440px;
+        left: 50%;
+        position: relative;
+        margin-left: -226px;
+        height: 450px;
+        border: 1px solid #888;
+        box-shadow: 7px 7px 3px #ccc;
+        font-size: 11px;
+        font-family: "Lucida Grande";
+        zoom: 100%;
+        padding: 5px;
+        white-space: pre-line;
+        overflow: scroll;
+    }
+    #edit-toolbar .wrap {
+        width: 588px;
+    }
+    #edit-toolbar .form-group {
+        width: 100%;
+    }
+    a[type="img"] {
+        color: red;
+    }
+</style>
+<div class="wrap" id="edit-toolbar" title="编辑器">
+    <div class="toolbar">
+        <button id="print">Print</button>
+        <button id="undo">Undo</button>
+        <button id="redo">Redo</button>
+        <button id="bold">B</button>
+        <button id="italic">I</button>
+        <button id="underline">U</button>
+        <button id="image-tool-bar">添加图片</button>
+    </div>
+  <div id="page" contenteditable="true">
+
+  </div>
+</div>
+
+<div id="dialog-image-upload" title="选择图片">
+    <input type="text" id="img-upload-input" name="img-upload-input" value="" class="form-control">
+    <input id="img-upload-file" type="file" name="img-upload-file" class="form-control">
+    <button onclick="            var inputText = $($(this).closest('div').find('input[type=\'text\']')[0]);
+        var inputFile = $($(this).closest('div').find('input[type=\'file\']')[0]);
+        uploadImg(inputFile, inputText, 'answer', 'uploadImage');">上传
+    </button>
+</div>
+
+<script>
+    $( function() {
+        var page = $( "#page" );
+        var basicControls = [ "#print", "#bold", "#underline", "#italic", "#undo", "#redo"];
+        var valueControls = [ "#fontsize", "#forecolor", "#hilitecolor", "#backcolor", "fontname" ];
+        page.resizable();
+
+        $( "#print" ).button({
+            "icon": "ui-icon-print",
+            "showLabel": false
+        });
+        $( "#redo" ).button({
+            "icon": "ui-icon-arrowreturnthick-1-e",
+            "showLabel": false
+        });
+        $( "#undo" ).button({
+            "icon": "ui-icon-arrowreturnthick-1-w",
+            "showLabel": false
+        });
+
+        $( "#image-tool-bar" ).button({
+            "icon": "ui-icon ui-icon-image",
+            "showLabel": false
+        });
+
+        $( ".toolbar" ).controlgroup();
+
+        $( "#zoom" ).on( "selectmenuchange", function() {
+            page.css({ "zoom": $( this ).val() });
+        })
+        $( function() {
+            $( "#edit-toolbar" ).dialog({
+                modal: true,
+                autoOpen: false,
+            });
+            $( "#dialog-image-upload" ).dialog({
+                resizable: false,
+                height: "auto",
+                width: 400,
+                modal: false,
+                autoOpen: false,
+                buttons: {
+                    "确定": function() {
+                        var image = "<a type=\"img\" title=" + $("#img-upload-input").val() + " href=" + $("#img-upload-input").val() + ">"+ "图片" +"</a>";
+                        $("#page").html($("#page").html() + image);
+                        $("#img-upload-input").val("");
+                        $( this ).dialog( "close" );
+                    },
+                    "取消": function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            });
+            $("#image-tool-bar").click(function(){
+                $( "#dialog-image-upload").dialog("open");
+            });
+        } );
+        $( basicControls.concat( valueControls ).join( ", " ) ).on( "click change selectmenuchange",
+                function() {
+                    var b=document.execCommand(
+                            this.id,
+                            false,
+                            $(this).val()
+                    );
+                   console.log(b)
+                } );
+    } );
+</script>
+</body>
+</html>

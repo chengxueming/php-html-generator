@@ -233,7 +233,9 @@ JS;
                 node = jqChild(ele, 0);
             }
             var value = ({$funcs}[title])(node);
-            console.log("node added to list is:", node);
+            if(title != 'eye') {
+                value = [value, title];
+            }
             data.push(value);
         });
         return data;
@@ -342,8 +344,10 @@ JS;
     public function setValue($valueList) {
         $this->valueList = $valueList;
         $childElemList = [];
-        if(empty($valueList) && is_null($this->subElem)) {
+        if(empty($valueList)) {
             $valueList = [];
+        } else {
+            $this->head->innerHtml = $this->head->innerHtml;
         }
         foreach($valueList as $value) {
             //修改html 内容
@@ -360,7 +364,7 @@ JS;
             //tagIndent($subElem->innerHtml, 2);
             $subElem->value = $v;
             $subElem->innerHtml->addClass($this->ele_class);
-            $html = elem("", [], [$subElem->innerHtml->__toString(), $this->tool_bar]);
+            $html = elem("", [], [$subElem->innerHtml->toString(), $this->tool_bar]);
             $childElemList[] = elem("div", ["class"=>[$this->out_class], "title"=>$title], $html);
             incrPropertys(["id", "name", "onchange", "onclick"], $subElem->innerHtml);
         }
@@ -504,8 +508,8 @@ JS;
     }
 
     public function submit($saveMethod, $listMethodName, $args) {
-        $c="pc_prize";
-        $jump = ci_link($c, $listMethodName, [], "&");
+        global $c;
+        $jump = ci_link($c, $listMethodName, $args, "&");
         $successJs = <<<JS
         alert(data.errmsg);
         if(data.errno == 0) {
@@ -522,7 +526,7 @@ JS;
     }
 
     public function addSubmitBtn($text="保存") {
-        $btn = addTitle(elem("button", ["id"=>"submitbutton", "type"=>"button", "class"=>["btn", "btn-primary"]], $text), "");
+        $btn = addTitle(elem("button", ["id"=>"submitbutton", "type"=>"button", "class"=>["btn", "btn-primary"]], elem("i", ["class"=>"icon-hand-up"])."&nbsp;".$text), "");
         array_insert($this->getContentHtml()->content, $btn, -1);        
     }
 }

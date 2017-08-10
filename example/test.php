@@ -161,6 +161,7 @@ function outputhtml($file, $code, $type = "boot")
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script type = "text/javascript" src="static/js/common.js"></script>
         <style type="text/css" src="common.css"></style>
+        <style type="text/css" src="./example/static/theme.css"></style>
         <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -432,6 +433,7 @@ function testListElemValue()
         ],
     ];
     $example = new Block("example", "", "alert-info");
+    $example->addSubmitBtn();
     $example->addElem("正文", new TextArea("example", "With the improvement of living standards, taking a vacation is playing..."));
     $en = new Block("english", "选择题");
     $en->addElem("重点", new TextArea("important"));
@@ -439,6 +441,7 @@ function testListElemValue()
     $example->addElem("精彩点评", new ListElem("comment", $en));
     $example->value = $l;
     $example->valueScript;
+    $example->submit("pc_prize", "save", []);
     outputhtml("testTemp", $example->innerHtml);
 }
 
@@ -640,5 +643,47 @@ function testMutiList()
 #getTranslation();
 #ajax2("function(){}", [], "", ["c"=>"a", "m"=>"d"]);
 
+function testClone() {
+    $sub = elem("div", ["id"=>2], "subdiv");
+    $input = elem("div", ["id"=>1], ["outdiv", $sub]);
+    $input2 = clone $input;
+    $sub->innerHtml = "changesub";
+    echo $input;
+}
 
-testForm();
+
+function testBreadCrumb()
+{
+    $b = new Breadcrumb();
+    $b->addLink("Home", "index.php?c=index&m=home");
+    $b->addLink("Trade", "index.php?c=index&m=home");
+    $b->addLink("Detail","", true);
+    #outputhtml("testTemp", $b());
+    return $b();
+}
+
+function testHeader() {
+    $h = new Header("交易详情");
+    outputhtml("testTemp", $h().testBreadCrumb());
+    return $h().testBreadCrumb(); 
+}
+
+function testTable() {
+    $t = new Table();
+    $data = [
+        ["id"=>"1", "试卷名称"=>"a"],
+        ["id"=>"2", "试卷名称"=>"b"],
+        ["id"=>"3", "试卷名称"=>"c"],
+        ["id"=>"4", "试卷名称"=>"d"],
+    ];
+    $t->setData($data);
+    $t->column("id", "ID");
+    $t->column("试卷名称", "试卷名称");
+    outputhtml("testTemp", testHeader().$t->render());
+}
+
+
+#testHeader();
+#$text = "保存";
+#print_r(explode("",$text));
+testTable();

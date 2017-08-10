@@ -51,7 +51,7 @@ function incrPropertys($propertys, $elem) {
             $old_script
         );
     };
-    if($elem->tag == "script") {
+    if($elem->tagName == "SCRIPT") {
         $elem->innerHtml = $new_script_func($elem->innerHtml);
     }
     foreach($propertys as $attrName) {
@@ -243,7 +243,7 @@ function mIsArr($arr) {
 }
 
 function ci_link($c, $m, $args = [], $break="&amp;") {
-    $root = "http://mis.iciba.com/msg_admin/www/index.php";
+    $root = $_SERVER["SCRIPT_NAME"];
     $arg = "";
     foreach($args as $k => $v) {
         $arg .= "$break$k=$v";

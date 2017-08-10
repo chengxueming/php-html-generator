@@ -1,0 +1,103 @@
+<style>
+#zoom-button {
+  width: 55px;
+}
+#fontname-button,
+#fontsize-button {
+  width: 45px;
+}
+#forecolor-button {
+  width: 50px;
+}
+#hilitecolor-button {
+  width: 70px;
+}
+#bold {
+  font-weight: bold;
+}
+#italic {
+  font-style: italic;
+}
+#underline {
+  text-decoration: underline;
+}
+#edit-toolbar .toolbar {
+  font-size: .75em;
+  z-index: 200;
+}
+#page {
+  width: 440px;
+  left: 50%;
+  position: relative;
+  margin-left: -226px;
+  height: 450px;
+  border: 1px solid #888;
+  box-shadow: 7px 7px 3px #ccc;
+  font-size: 11px;
+  font-family: "Lucida Grande";
+  zoom: 100%;
+  padding: 5px;
+  white-space: pre-line;
+  overflow: scroll;
+}
+#edit-toolbar .wrap {
+  width: 588px;
+}
+#edit-toolbar .form-group {
+width: 100%;
+}
+</style>
+<div class="wrap" id="edit-toolbar" title="test">
+  <div class="toolbar">
+      <button id="print">Print</button>
+      <button id="undo">Undo</button>
+      <button id="redo">Redo</button>
+      <button id="bold">B</button>
+      <button id="italic">I</button>
+      <button id="underline">U</button>
+ 
+  </div>
+  <pre id="page" contenteditable="true">
+
+  </pre>
+</div>
+ <script>
+$( function() {
+  var page = $( "#page" );
+  var basicControls = [ "#print", "#bold", "#underline", "#italic", "#undo", "#redo" ];
+  var valueControls = [ "#fontsize", "#forecolor", "#hilitecolor", "#backcolor", "fontname" ];
+  page.resizable();
+
+  $( "#print" ).button({
+    "icon": "ui-icon-print",
+    "showLabel": false
+  });
+  $( "#redo" ).button({
+    "icon": "ui-icon-arrowreturnthick-1-e",
+    "showLabel": false
+  });
+  $( "#undo" ).button({
+    "icon": "ui-icon-arrowreturnthick-1-w",
+    "showLabel": false
+  });
+
+  $( ".toolbar" ).controlgroup();
+  $( "#zoom" ).on( "selectmenuchange", function() {
+    page.css({ "zoom": $( this ).val() });
+  })
+  $( function() {
+    $( "#edit-toolbar" ).dialog({
+      modal: true,
+      autoOpen: false,
+    });
+  } );
+  $( basicControls.concat( valueControls ).join( ", " ) ).on( "click change selectmenuchange",
+    function() {
+      document.execCommand(
+        this.id,
+        false,
+        $( this ).val()
+      );
+    } );
+} );
+</script>

@@ -32,6 +32,14 @@ class HtmlTag extends Markup
         }
     }
 
+    public function __clone() {
+        foreach($this->content as &$v) {
+            if(is_object($v)) {
+                $v = clone $v;
+            }
+        }
+    }
+
     public function __set($property, $value) {
         if($property == "innerHtml") {
             $this->content = [];
