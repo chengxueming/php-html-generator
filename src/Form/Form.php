@@ -1,18 +1,22 @@
 <?php
-class EditTable {
-    var $t = null;
-    var $tHead = null;
-    var $titleRow = null;
-    var $tBody = null;
-    var $valueScript = [];
-    var $bodyScript = [];
-    var $idMap = [];
-    var $data = array();
-    var $c = null;
-    var $m = null;
-    var $titleMap = [];
+namespace cxm\htmlgen\Form;
 
-    public function __construct($attr = []) {
+class Form
+{
+    public $t = null;
+    public $tHead = null;
+    public $titleRow = null;
+    public $tBody = null;
+    public $valueScript = [];
+    public $bodyScript = [];
+    public $idMap = [];
+    public $data = array();
+    public $c = null;
+    public $m = null;
+    public $titleMap = [];
+
+    public function __construct($attr = [])
+    {
         $this->titleRow = elem("tr");
         $this->tHead = elem("thead", [], $this->titleRow);
         $this->tBody = elem("tbody");
@@ -22,20 +26,14 @@ class EditTable {
         $this->c = isset($c)?$c:"pc_prize";
         $this->m = isset($m)?$m:"edit";
     }
-
-    public function insertHeadRow() {
-
-    }
-
-    public function insertBodyRow() {
-
-    }
-
-    public function setData($data) {
+    
+    public function setData($data)
+    {
         $this->data = $data;
     }
 
-    public function getTHead() {
+    public function getTHead()
+    {
         return $this->tHead;
     }
 
@@ -43,7 +41,8 @@ class EditTable {
         return $this->tBody;
     }
 
-    public function column($value, $title = null, $attrTitle = [], $attrBody = []) {
+    public function column($value, $title = null, $attrTitle = [], $attrBody = [])
+    {
         if(null !== $title){
             safeSetArr($attrTitle, ["width"=>"%"]);
             $this->titleRow->addElement(elem("th", $attrTitle, $title));
@@ -67,11 +66,13 @@ class EditTable {
         }
     }
 
-    public function setEditData($row) {
+    public function setEditData($row)
+    {
         $this->data = $row;
     }
 
-    private function setDeepProperty($ele, $property) {
+    private function setDeepProperty($ele, $property)
+    {
         if(is_string($ele) || is_array($ele)) {
             return;
         }
@@ -89,7 +90,8 @@ class EditTable {
     *@param $title type str
     *@param $value
     */
-    public function row($title, $value, $readonly=false, $condation = [], $required = false) {
+    public function add($title, $value, $readonly=false, $condation = [], $required = false)
+    {
         $tRow = elem("tr", [] ,elem("td", [], $title));
         $this->tBody->addElement($tRow);
         //可以作为子元素的

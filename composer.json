@@ -1,0 +1,10 @@
+{
+  "require":{
+    "airmanbzh/php-html-generator":"v1.0.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "cxm\\htmlgen\\":"src/"
+    }
+  }
+}

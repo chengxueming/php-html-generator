@@ -251,6 +251,7 @@ function testPassage() {
 
 
 
-testPassage();
+#testPassage();
 #testClone();
 #echo date("Ymd H:i:s", time());
+testListDivCondation();
